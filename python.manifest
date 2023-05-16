@@ -1,0 +1,112 @@
+[loader]
+entrypoint = "file:/usr/local/lib/x86_64-linux-gnu/gramine/libsysdb.so"
+log_level = "error"
+insecure__use_cmdline_argv = true
+
+[loader.env]
+LD_LIBRARY_PATH = "/lib:/lib:/lib/x86_64-linux-gnu:/usr//lib/x86_64-linux-gnu"
+OMP_NUM_THREADS = "4"
+
+[libos]
+entrypoint = "/usr/bin/python3.8"
+
+[sys]
+enable_sigterm_injection = true
+enable_extra_runtime_domain_names_conf = true
+
+[sys.stack]
+size = "2M"
+
+[[fs.mounts]]
+path = "/lib"
+uri = "file:/usr/local/lib/x86_64-linux-gnu/gramine/runtime/glibc"
+
+[[fs.mounts]]
+path = "/lib/x86_64-linux-gnu"
+uri = "file:/lib/x86_64-linux-gnu"
+
+[[fs.mounts]]
+path = "/usr//lib/x86_64-linux-gnu"
+uri = "file:/usr//lib/x86_64-linux-gnu"
+
+[[fs.mounts]]
+path = "/usr/lib/python3.8"
+uri = "file:/usr/lib/python3.8"
+
+[[fs.mounts]]
+path = "/usr/lib/python3.8/lib-dynload"
+uri = "file:/usr/lib/python3.8/lib-dynload"
+
+[[fs.mounts]]
+path = "/home/iudx/.local/lib/python3.8/site-packages"
+uri = "file:/home/iudx/.local/lib/python3.8/site-packages"
+
+[[fs.mounts]]
+path = "/usr/local/lib/python3.8/dist-packages"
+uri = "file:/usr/local/lib/python3.8/dist-packages"
+
+[[fs.mounts]]
+path = "/usr/lib/python3/dist-packages"
+uri = "file:/usr/lib/python3/dist-packages"
+
+[[fs.mounts]]
+path = "/usr/bin/python3.8"
+uri = "file:/usr/bin/python3.8"
+
+[[fs.mounts]]
+path = "/etc/hosts"
+uri = "file:helper-files/hosts"
+
+[[fs.mounts]]
+path = "/quote.dat"
+uri = "file:quote.dat"
+
+[[fs.mounts]]
+uri = "file:/etc"
+path = "/etc"
+
+[[fs.mounts]]
+type = "tmpfs"
+path = "/tmp"
+
+[sgx]
+debug = true
+edmm_enable = false
+nonpie_binary = true
+enclave_size = "1G"
+max_threads = 32
+remote_attestation = "dcap"
+ra_client_spid = ""
+ra_client_linkable = false
+trusted_files = [
+    { uri = "file:/usr/local/lib/x86_64-linux-gnu/gramine/libsysdb.so" },
+    { uri = "file:/usr/bin/python3.8" },
+    { uri = "file:/usr/local/lib/x86_64-linux-gnu/gramine/runtime/glibc/" },
+    { uri = "file:/lib/x86_64-linux-gnu/" },
+    { uri = "file:/usr//lib/x86_64-linux-gnu/" },
+    { uri = "file:/usr/lib/python3.8/" },
+    { uri = "file:/usr/lib/python3.8/lib-dynload/" },
+    { uri = "file:/home/iudx/.local/lib/python3.8/site-packages/" },
+    { uri = "file:/usr/local/lib/python3.8/dist-packages/" },
+    { uri = "file:/usr/lib/python3/dist-packages/" },
+    { uri = "file:getfile.py" },
+    { uri = "file:helper-files/" },
+    { uri = "file:/usr/local/lib/python3.8/" },
+]
+allowed_files = [
+    "file:/etc/ssl/certs/ca-certificates.crt",
+    "file:quote.dat",
+    "file:data.json",
+    "file:img.txt",
+    "file:decryptedData.tar.gz",
+    "file:/inputdata/",
+]
+isvprodid = 0
+isvsvn = 0
+require_avx = false
+require_avx512 = false
+require_mpx = false
+require_pkru = false
+require_amx = false
+require_exinfo = false
+enable_stats = false
