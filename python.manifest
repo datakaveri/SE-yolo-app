@@ -50,6 +50,10 @@ path = "/usr/lib/python3/dist-packages"
 uri = "file:/usr/lib/python3/dist-packages"
 
 [[fs.mounts]]
+path = "/env/bin/python3"
+uri = "file:env/bin/python3"
+
+[[fs.mounts]]
 path = "/usr/bin/python3.8"
 uri = "file:/usr/bin/python3.8"
 
@@ -68,6 +72,18 @@ path = "/etc"
 [[fs.mounts]]
 type = "tmpfs"
 path = "/tmp"
+
+[[fs.mounts]]
+type = "tmpfs"
+path = "/inputdata/"
+
+[[fs.mounts]]
+type = "tmpfs"
+path = "/yolov5/"
+
+[[fs.mounts]]
+path = "/bin"
+uri = "file:/bin"
 
 [sgx]
 debug = true
@@ -92,6 +108,7 @@ trusted_files = [
     { uri = "file:getfile.py" },
     { uri = "file:helper-files/" },
     { uri = "file:/usr/local/lib/python3.8/" },
+    { uri = "file:/bin/" },
 ]
 allowed_files = [
     "file:/etc/ssl/certs/ca-certificates.crt",
@@ -99,7 +116,6 @@ allowed_files = [
     "file:data.json",
     "file:img.txt",
     "file:decryptedData.tar.gz",
-    "file:/inputdata/",
 ]
 isvprodid = 0
 isvsvn = 0

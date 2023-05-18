@@ -23,11 +23,15 @@ fs.mounts = [
 {% for path in python.get_sys_path(entrypoint) %}
   { path = "{{ path }}", uri = "file:{{ path }}" },
 {% endfor %}
+  { path="/env/bin/python3", uri = "file:env/bin/python3"},
   { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
   { path = "/etc/hosts", uri = "file:helper-files/hosts" },
- { path = "/quote.dat", uri = "file:quote.dat"},
- { uri = "file:/etc", path = "/etc" },
+  { path = "/quote.dat", uri = "file:quote.dat"},
+  { uri = "file:/etc", path = "/etc" },
   { type = "tmpfs", path = "/tmp" },
+  { type="tmpfs", path="/inputdata/"},
+  { type="tmpfs", path="/yolov5/"},
+  { path = "/bin", uri = "file:/bin" },
 ]
 
 sys.stack.size = "2M"
@@ -55,6 +59,7 @@ sgx.trusted_files = [
   "file:getfile.py",
   "file:helper-files/",
   "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
+  "file:/bin/"
 ]
 
 sgx.allowed_files = [
@@ -64,5 +69,5 @@ sgx.allowed_files = [
   "file:data.json",
   "file:img.txt",
   "file:decryptedData.tar.gz",
-  "file:/inputdata/"
+ # "file:/inputdata/"
 ]

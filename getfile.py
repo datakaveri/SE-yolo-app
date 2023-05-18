@@ -12,6 +12,7 @@ import _pickle as pickle
 from Crypto.Cipher import PKCS1_OAEP
 from cryptography.fernet import Fernet
 import tarfile
+import subprocess
 
 def generateQuote():
     global publicKey, key
@@ -28,10 +29,9 @@ def generateQuote():
     print("Quote Generated.")
     return quote,b64publicKey
 
-def getTokenFromAPD():
+def getTokenFromAPD(quote,b64publicKey):
     url='https://authvertx.iudx.io/auth/v1/token'
     headers={'clientId': '73599b23-6550-4f01-882d-a2db75ba24ba', 'clientSecret': '15a874120135e4eed4782c8b51385649fee55562', 'Content-Type': 'application/json'}
-    quote, b64publicKey=generateQuote()
     b64quote=base64.b64encode(quote)
     context={
                 "sgxQuote":b64quote.decode("utf-8"),
@@ -55,8 +55,7 @@ def getTokenFromAPD():
     else:
         print("Quote Verification failed.", r.text)
     
-def getFileFromAAA():
-    token=getTokenFromAPD()
+def getFileFromAAA(token):
     rs_headers={'Authorization': f'Bearer {token}'}
     rs_url='https://authenclave.iudx.io/resource_server/encrypted.store'
     rs=requests.get(rs_url,headers=rs_headers)
@@ -65,8 +64,7 @@ def getFileFromAAA():
         loadedDict=pickle.loads(rs.content)
         return loadedDict
 
-def decryptFile():
-    loadedDict=getFileFromAAA()
+def decryptFile(loadedDict):
     b64encryptedKey=loadedDict["encryptedKey"]
     encData=loadedDict["encData"]
     fileName=loadedDict["tarName"]
@@ -79,11 +77,24 @@ def decryptFile():
         f.write(decryptedData)
     flag= tarfile.is_tarfile('decryptedData.tar.gz')
     tar=tarfile.open("decryptedData.tar.gz")
-    print(flag)
     tar.extractall('/inputdata')
 
 
-decryptFile()
-        
-        
-        
+             
+def runYolo():
+    output=subprocess.check_output("./yolov5/runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
+    print(output)
+
+
+def main():
+    quote, b64publicKey= generateQuote()    
+    token=getTokenFromAPD(quote, b64publicKey)
+    loadedDict=getFileFromAAA(token)
+    decryptFile(loadedDict)
+    runYolo()
+
+
+
+if __name__ == "__main__":
+
+    main()
