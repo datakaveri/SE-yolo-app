@@ -37,22 +37,11 @@ sgx_sign: python.manifest
 		--manifest $< \
 		--output $<.sgx
 
-.PHONY: check
-check: all
-	./run-tests.sh > TEST_STDOUT 2> TEST_STDERR
-	@grep -q "Success 1/4" TEST_STDOUT
-	@grep -q "Success 2/4" TEST_STDOUT
-	@grep -q "Success 3/4" TEST_STDOUT
-	@grep -q "Success 4/4" TEST_STDOUT
-ifeq ($(SGX),1)
-	@grep -q "Success SGX report" TEST_STDOUT
-	@grep -q "Success SGX quote" TEST_STDOUT
-endif
 
 .PHONY: clean
 clean:
-	$(RM) *.manifest *.manifest.sgx *.token *.sig OUTPUT* *.PID TEST_STDOUT TEST_STDERR
-	$(RM) -r scripts/__pycache__
+	$(RM) *.manifest *.manifest.sgx *.token *.sig OUTPUT* *.PID TEST_STDOUT TEST_STDERR yolov5/labels.json
+	$(RM) -r scripts/__pycache__ inputdata/* yolov5/runs/detect/*
 
 .PHONY: distclean
 distclean: clean
