@@ -73,6 +73,7 @@ def decryptFile(loadedDict):
     encryptedKey=base64.b64decode(b64encryptedKey)
     decryptor = PKCS1_OAEP.new(key)
     plainKey=decryptor.decrypt(encryptedKey)
+    print("Symmetric key decrypted using the enclave's private RSA key.")
     fernetKey = Fernet(plainKey)
     decryptedData = fernetKey.decrypt(encData)
     with open('/tmp/decryptedData.tar.gz', "wb") as f:

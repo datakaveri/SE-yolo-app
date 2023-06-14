@@ -5,8 +5,11 @@ import json
 input_dir="runs/detect/exp/labels/"
 output_file="labels.json"
 
+
+
+        
 with open(output_file, "a") as f:
-    f.write("[")
+    f.write("{\"inference\":{\"inference\":{\"labels\":[")
 
 first_file=True
 for file_name in os.listdir(input_dir):
@@ -23,4 +26,5 @@ for file_name in os.listdir(input_dir):
     first_file=False
 
 with open(output_file, "a") as f:
-    f.write("]")
+    f.write("]}}}")
+

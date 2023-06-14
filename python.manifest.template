@@ -25,7 +25,6 @@ fs.mounts = [
   { path = "/env", uri = "file:env" },
   { path = "/runyolo5.sh", uri = "file:runyolo5.sh"},
   { type = "encrypted", path = "/inputdata/", uri = "file:inputdata/", key_name = "_sgx_mrsigner" },
- 
 ]
 
 sys.enable_sigterm_injection = true
