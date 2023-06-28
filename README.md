@@ -1,7 +1,7 @@
 # PPML by using Intel SGX
 This repository implements Secure Enclaves by Intel SGX to run YOLO machine learning model on input images which are sourced from a resource server in a privacy preserving workflow.  
 ## Steps
-1. Create virtual environment.
+1. Create virtual environment.   
     `python -m venv .env`
 2. Source the virtual environment.  
     `source env/bin/activate`
