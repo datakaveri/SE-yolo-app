@@ -15,7 +15,6 @@ import tarfile
 import subprocess
 
 def generateQuote():
-    global key
     key = RSA.generate(2048)
     publicKey=key.publickey().export_key(format='DER')
     privateKey=key.export_key(format='DER')
@@ -27,7 +26,7 @@ def generateQuote():
     with open("/dev/attestation/quote", "rb") as f:
         quote = f.read()
     print("Quote generated.")
-    return quote,b64publicKey
+    return quote,b64publicKey, key
 
 def getTokenFromAPD(quote,b64publicKey):
     url='https://authvertx.iudx.io/auth/v1/token'
@@ -66,7 +65,7 @@ def getFileFromAAA(token):
     else:
         print("Token authentication failed.",rs.text)
 
-def decryptFile(loadedDict):
+def decryptFile(loadedDict,key):
     b64encryptedKey=loadedDict["encryptedKey"]
     encData=loadedDict["encData"]
     fileName=loadedDict["tarName"]
@@ -89,10 +88,10 @@ def runYolo():
 
 
 def main():
-    quote, b64publicKey= generateQuote()    
+    quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey)
     loadedDict=getFileFromAAA(token)
-    decryptFile(loadedDict)
+    decryptFile(loadedDict, key)
     runYolo()
 
 

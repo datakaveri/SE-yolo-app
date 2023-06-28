@@ -8,7 +8,7 @@ loader.env.PYTHONUNBUFFERED="1"
 loader.env.OMP_NUM_THREADS = "8"
 loader.env.HOME="/home/iudx"
 loader.insecure__use_cmdline_argv = true
-loader.env.PATH="/home/iudx/.cargo/bin:/home/iudx/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/iudx/linux-sgx/linux-sgx/linux/installer/bin/sgxsdk/bin:/home/iudx/linux-sgx/linux-sgx/linux/installer/bin/sgxsdk/bin/x64"
+#loader.env.PATH="/home/iudx/.cargo/bin:/home/iudx/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/iudx/linux-sgx/linux-sgx/linux/installer/bin/sgxsdk/bin:/home/iudx/linux-sgx/linux-sgx/linux/installer/bin/sgxsdk/bin/x64"
 
 fs.mounts = [
   { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
@@ -56,10 +56,10 @@ sgx.trusted_files = [
   "file:yolov5/",
   "file:env/",
   "file:runyolo5.sh",
+  "file:/etc/ssl/certs/ca-certificates.crt",
 ]
 
 sgx.allowed_files = [
   "file:yolov5/runs/detect/",
   "file:yolov5/labels.json",
-  "file:/etc/ssl/certs/ca-certificates.crt",
 ]
