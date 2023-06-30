@@ -53,7 +53,7 @@ def getTokenFromAPD(quote,b64publicKey,config):
         return token
     else:
         print("Quote verification failed.", r.text)
-    
+        sys.exit() 
 def getFileFromAAA(token,config):
     rs_headers={'Authorization': f'Bearer {token}'}
     rs_url=config["rs_url"]
@@ -64,6 +64,7 @@ def getFileFromAAA(token,config):
         return loadedDict
     else:
         print("Token authentication failed.",rs.text)
+        sys.exit()
 
 def decryptFile(loadedDict,key):
     b64encryptedKey=loadedDict["encryptedKey"]
