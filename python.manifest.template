@@ -25,6 +25,7 @@ fs.mounts = [
   { path = "/env", uri = "file:env" },
   { path = "/runyolo5.sh", uri = "file:runyolo5.sh"},
   { type = "encrypted", path = "/inputdata/", uri = "file:inputdata/", key_name = "_sgx_mrsigner" },
+
 ]
 
 sys.enable_sigterm_injection = true
@@ -57,6 +58,7 @@ sgx.trusted_files = [
   "file:env/",
   "file:runyolo5.sh",
   "file:/etc/ssl/certs/ca-certificates.crt",
+  "file:config.json"
 ]
 
 sgx.allowed_files = [

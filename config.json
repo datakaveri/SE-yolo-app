@@ -1,0 +1,10 @@
+{
+	"apd_url":"https://authvertx.iudx.io/auth/v1/token",
+	"clientId":"73599b23-6550-4f01-882d-a2db75ba24ba",
+	"clientSecret":"15a874120135e4eed4782c8b51385649fee55562",
+	"Content-Type":"application/json",
+	"itemId":"iisc.ac.in/89a36273d77dac4cf38114fca1bbe64392547f86/rs.iudx.io/nitro-enclave-test-rsg",
+	"itemType":"resource_group",
+	"role":"consumer",
+	"rs_url":"https://authenclave.iudx.io/resource_server/encrypted.store"
+}

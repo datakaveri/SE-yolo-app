@@ -28,9 +28,9 @@ def generateQuote():
     print("Quote generated.")
     return quote,b64publicKey, key
 
-def getTokenFromAPD(quote,b64publicKey):
-    url='https://authvertx.iudx.io/auth/v1/token'
-    headers={'clientId': '73599b23-6550-4f01-882d-a2db75ba24ba', 'clientSecret': '15a874120135e4eed4782c8b51385649fee55562', 'Content-Type': 'application/json'}
+def getTokenFromAPD(quote,b64publicKey,config):
+    apd_url=config["apd_url"]
+    headers={'clientId': config["clientId"], 'clientSecret': config["clientSecret"], 'Content-Type': config["Content-Type"]}
     b64quote=base64.b64encode(quote)
     context={
                 "sgxQuote":b64quote.decode("utf-8"),
@@ -39,13 +39,13 @@ def getTokenFromAPD(quote,b64publicKey):
 
 
     data={
-            "itemId": "iisc.ac.in/89a36273d77dac4cf38114fca1bbe64392547f86/rs.iudx.io/nitro-enclave-test-rsg",
-            "itemType": "resource_group",
-            "role": "consumer",
+            "itemId": config["itemId"],
+            "itemType": config["itemType"],
+            "role": config["role"],
             "context": context
          }
     dataJson=json.dumps(data)
-    r= requests.post(url,headers=headers,data=dataJson)
+    r= requests.post(apd_url,headers=headers,data=dataJson)
     if(r.status_code==200):
         print("Quote verified and Token recieved.")
         jsonResponse=r.json()
@@ -54,9 +54,9 @@ def getTokenFromAPD(quote,b64publicKey):
     else:
         print("Quote verification failed.", r.text)
     
-def getFileFromAAA(token):
+def getFileFromAAA(token,config):
     rs_headers={'Authorization': f'Bearer {token}'}
-    rs_url='https://authenclave.iudx.io/resource_server/encrypted.store'
+    rs_url=config["rs_url"]
     rs=requests.get(rs_url,headers=rs_headers)
     if(rs.status_code==200):
         print("Token authenticated and Encrypted images recieved.")
@@ -88,9 +88,11 @@ def runYolo():
 
 
 def main():
+    with open("config.json") as file:
+        config=json.load(file)
     quote, b64publicKey, key= generateQuote()    
-    token=getTokenFromAPD(quote, b64publicKey)
-    loadedDict=getFileFromAAA(token)
+    token=getTokenFromAPD(quote, b64publicKey, config)
+    loadedDict=getFileFromAAA(token, config)
     decryptFile(loadedDict, key)
     runYolo()
 
