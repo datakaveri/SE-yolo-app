@@ -14,7 +14,7 @@ echo 'Removing all files initially present'
 make clean
 
 echo 'Setting Remote Attestation type as DCAP'
-make SGX=1 RA_type=dcap
+make SGX=1 RA_TYPE=dcap
 
 #3. Terminate any previously running enclave
 #nitro-cli terminate-enclave --all
