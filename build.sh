@@ -9,15 +9,12 @@ set -x # to echo the command being executed
 
 #./memsmall.sh
 
-#1.Create Docker (Edit "Dockerfile" for any changes)
-#docker build -t secureapp-nitro .
-
-#2. Build nitro enclave
+echo 'Building Gramine SGX'
+echo 'Removing all files initially present'
 make clean
-make SGX=1 RA_type=dcap
-#nitro-cli build-enclave --docker-uri secureapp-nitro:latest --output-file secureapp-nitro.eif
 
-#mv secureapp-nitro.eif /home/ubuntu/cached/secureapp-nitro.eif
+echo 'Setting Remote Attestation type as DCAP'
+make SGX=1 RA_type=dcap
 
 #3. Terminate any previously running enclave
 #nitro-cli terminate-enclave --all
