@@ -22,7 +22,7 @@ fs.mounts = [
   { type = "tmpfs", path = "/tmp/" },
   { path = "/yolov5", uri = "file:yolov5/" },
   { path = "/bin", uri = "file:/bin" },
-  { path = "/env", uri = "file:env" },
+  { path = "/env", uri = "file:/home/iudx/.env/sgx-yolo-app/" },
   { path = "/runyolo5.sh", uri = "file:runyolo5.sh"},
   { type = "encrypted", path = "/inputdata/", uri = "file:inputdata/", key_name = "_sgx_mrsigner" },
 
@@ -55,7 +55,7 @@ sgx.trusted_files = [
   "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
   "file:/bin/",
   "file:yolov5/",
-  "file:env/",
+  "file:/home/iudx/.env/sgx-yolo-app/",
   "file:runyolo5.sh",
   "file:/etc/ssl/certs/ca-certificates.crt",
   "file:config.json"
