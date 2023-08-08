@@ -2,7 +2,7 @@
 
 set -x # to echo the command being executed
 
-cp /home/iudx/sgx-yolo-app/yolov5/*.pt ./yolov5/
+cp /home/iudx/pulledcode/sgx-yolo-app/yolov5/*.pt ./yolov5/
 
 #gramine-sgx terminate-enclave --all
 #sh /home/iudx/sgx-enclave-manager/cl.sh
