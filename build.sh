@@ -1,7 +1,9 @@
 #!/bin/bash
 
 #virtual environment 
-if -e /home/iudx/.env; then
+DIR=/home/iudx/.env/sgx-yolo-app
+if [ -d "$DIR" ];
+then
     echo 'Virtual environment exists'
 else
     echo 'Creating virtual environment'
