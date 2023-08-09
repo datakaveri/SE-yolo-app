@@ -18,7 +18,7 @@ fi
 
 set -x # to echo the command being executed
 
-cp /home/iudx/yoloTest/*.pt ./yolov5/
+cp /home/iudx/yolov5x.pt ./yolov5/
 
 #gramine-sgx terminate-enclave --all
 #sh /home/iudx/sgx-enclave-manager/cl.sh
