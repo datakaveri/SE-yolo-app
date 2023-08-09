@@ -54,7 +54,7 @@ def getTokenFromAPD(quote,b64publicKey,config):
     else:
         print("Quote verification failed.", r.text)
         sys.exit() 
-def getFileFromAAA(token,config):
+def getFileFromResourceServer(token,config):
     rs_headers={'Authorization': f'Bearer {token}'}
     rs_url=config["rs_url"]
     rs=requests.get(rs_url,headers=rs_headers)
@@ -93,7 +93,7 @@ def main():
         config=json.load(file)
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
-    loadedDict=getFileFromAAA(token, config)
+    loadedDict=getFileFromResourceServer(token, config)
     decryptFile(loadedDict, key)
     runYolo()
 
