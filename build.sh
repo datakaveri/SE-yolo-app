@@ -7,14 +7,14 @@ then
     echo 'Virtual environment exists'
 else
     echo 'Creating virtual environment'
-    python3 -m venv .env/sgx-yolo-app
-
-    #source the virtual environment
-    source .env/sgx-yolo-app/bin/activate
-
-    #install dependencies
-    pip3 install -r requirements.txt -r yolov5/requirements.txt
+    python3 -m venv $DIR
 fi
+
+#source the virtual environment
+source $DIR/bin/activate
+
+#install dependencies
+pip3 install -r requirements.txt -r yolov5/requirements.txt
 
 set -x # to echo the command being executed
 
