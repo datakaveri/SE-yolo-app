@@ -1,0 +1,10 @@
+{
+    "apd_url":"https://authvertx.iudx.io/auth/v1/token",
+	"clientId":"<client_id>",
+	"clientSecret":"<client_secret>",
+	"Content-Type":"application/json",
+	"itemId":"<resource id>",
+	"itemType":"resource_group",
+	"role":"consumer",
+	"rs_url":"https://authenclave.iudx.io/resource_server/encrypted.store"
+}
