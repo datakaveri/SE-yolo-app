@@ -11,7 +11,7 @@ else
 fi
 
 #source the virtual environment
-source $DIR/bin/activate
+. $DIR/bin/activate
 
 #install dependencies
 pip3 install -r requirements.txt -r yolov5/requirements.txt
