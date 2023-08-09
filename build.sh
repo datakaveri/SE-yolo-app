@@ -1,5 +1,19 @@
 #!/bin/bash
 
+#virtual environment 
+if -d .env; then
+    echo 'Virtual environment exists'
+else
+    echo 'Creating virtual environment'
+    python3 -m venv .env/sgx-yolo-app
+
+    #source the virtual environment
+    source .env/sgx-yolo-app/bin/activate
+
+    #install dependencies
+    pip3 install -r requirements.txt -r yolov5/requirements.txt
+fi
+
 set -x # to echo the command being executed
 
 cp /home/iudx/yoloTest/*.pt ./yolov5/
