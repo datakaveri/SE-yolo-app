@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #virtual environment 
-if -d .env; then
+if -d /home/iudx/.env; then
     echo 'Virtual environment exists'
 else
     echo 'Creating virtual environment'
