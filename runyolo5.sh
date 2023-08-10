@@ -7,4 +7,5 @@ echo Saving labels..
 ../env/bin/python ./savelabels.py
 
 echo Labels saved in yolov5/labels.json
+ls
 

@@ -86,6 +86,7 @@ def decryptFile(loadedDict,key):
 def runYolo():
     print("YOLO invoked...")
     output=subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
+    return output
 
 
 def main():
@@ -95,7 +96,8 @@ def main():
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
     decryptFile(loadedDict, key)
-    runYolo()
+    runOutput=runYolo()
+    print("YOLO output:",runOutput)
 
 
 
