@@ -22,6 +22,8 @@ cp /home/iudx/yoloHelper/config.json ./
 
 cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 
+cp /home/iudx/yoloHelper/inference.txt ./yolov5/
+
 #gramine-sgx terminate-enclave --all
 #sh /home/iudx/sgx-enclave-manager/cl.sh
 
