@@ -87,7 +87,7 @@ def runYolo():
     print("YOLO invoked...")
     output=subprocess.run("./runyolo5.sh",shell=True,capture_output=True,text=True)
     runOutput=output.stdout
-    with open("/home/iudx/yoloHelper/runOutput.txt", "w") as f:
+    with open("./yolov5/runOutput.txt", "w") as f:
         f.write(runOutput)
 
 

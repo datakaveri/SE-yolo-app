@@ -1,5 +1,5 @@
 #!/bin/bash
-env/bin/python ./yolov5/detect.py --source './inputdata/*.*' --weights ./yolov5/yolov5x.pt --save-txt --nosave  2>&1 
+env/bin/python ./yolov5/detect.py --source './inputdata/*.*' --weights ./yolov5/yolov5x.pt --save-txt --nosave  2>&1>./yolov5/runOutput.txt
 cd ./yolov5/
 
 echo Saving labels..
