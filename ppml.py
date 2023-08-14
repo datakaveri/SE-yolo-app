@@ -85,7 +85,7 @@ def decryptFile(loadedDict,key):
 
 def runYolo():
     print("YOLO invoked...")
-    output=subprocess.run("./runyolo5.sh",shell=True,capture_output=True)
+    output=subprocess.run("./runyolo5.sh",shell=True,capture_output=True,text=True)
     runOutput=output.stdout
     with open("/home/iudx/yoloHelper/runOutput.txt", "w") as f:
         f.write(runOutput)
