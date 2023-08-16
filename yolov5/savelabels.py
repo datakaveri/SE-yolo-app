@@ -7,7 +7,7 @@ output_file="labels.json"
 input_dir2="./runOutput.txt"
 
 with open(input_dir2, "r") as runOutput_file:
-    content= runOutput_file.read()
+    outputContent= runOutput_file.read()
 
         
 with open(output_file, "a") as f:
@@ -42,7 +42,7 @@ with open(output_file, "a") as f:
 with open(output_file) as f:
     json_decoded = json.load(f)
 
-json_decoded["runOutput"] = content
+json_decoded["runOutput"] = outputContent
 
 with open(output_file, 'w') as f:
     json.dump(json_decoded, f)
