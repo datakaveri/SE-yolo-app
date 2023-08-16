@@ -88,14 +88,38 @@ def runYolo():
     output=subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
 
 
+def setState(title,description,step,maxSteps):
+    state= {"title":title,"description":description,"step":step,"maxSteps":maxSteps}
+    call_set_state_endpoint(state)
+
+
+def call_set_state_endpoint(state):
+    #define enpoint url
+    endpoint_url="http://192.168.1.199:4000/enclave/setstate"
+
+    #create Json payload
+    payload = { "state": state }
+
+    #create POST request
+    r = requests.post(endpoint_url, json=payload)
+
+    #print response
+    print(r.text)
+
+
 def main():
     with open("config.json") as file:
         config=json.load(file)
+    setState("Enclave booted","Enclave booted",6,10)
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
+    setState("Encrypted data recieved","Encrypted data recieved",7,10)
     decryptFile(loadedDict, key)
+    setState("Decryption completed","Decryption completed",8,10)
+    setState("Executing application","Executing application",9,10)
     runYolo()
+    setState("Execution completed","Execution completed",10,10)
 
 
 
