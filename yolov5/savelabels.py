@@ -11,13 +11,15 @@ with open(input_dir2, "r") as runOutput_file:
 
         
 with open(output_file, "a") as f:
-    f.write("{\"inference\":{\"inference\":{\"runoutput\":")
+    f.write("{\"inference\":{\"inference\":{\"labels\":[")
 
+'''
 #add runoutput
 with open(output_file, "a") as f:
     f.write("\"" + content + "\"")
 with open(output_file, "a") as f:
     f.write(" ,\"labels\":[")
+'''
 
 first_file=True
 for file_name in os.listdir(input_dir):
@@ -35,6 +37,12 @@ for file_name in os.listdir(input_dir):
 
 with open(output_file, "a") as f:
     f.write("]}}}")
-    
-#with open(output_file, "r") as f:
-    #print(f.read())
+
+
+with open(output_file) as f:
+    json_decoded = json.load(f)
+
+json_decoded["runOutput"] = content
+
+with open(output_file, 'w') as f:
+    json.dump(json_decoded, f)
