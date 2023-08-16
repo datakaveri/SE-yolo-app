@@ -6,5 +6,6 @@
 	"itemId":"<resource id>",
 	"itemType":"resource_group",
 	"role":"consumer",
-	"rs_url":"https://authenclave.iudx.io/resource_server/encrypted.store"
+	"rs_url":"https://authenclave.iudx.io/resource_server/encrypted.store",
+	"enclaveManagerAddress" : "http://192.168.1.199:4000"
 }
