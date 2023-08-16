@@ -4,7 +4,7 @@ import json
 
 input_dir="runs/detect/exp/labels/"
 output_file="labels.json"
-input_dir2="/home/iudx/yoloHelper/runOutput.txt"
+input_dir2="./runOutput.txt"
 
 with open(input_dir2, "r") as runOutput_file:
     content= runOutput_file.read()
