@@ -24,11 +24,6 @@ cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 
 cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 
-#gramine-sgx terminate-enclave --all
-#sh /home/iudx/sgx-enclave-manager/cl.sh
-
-#./memsmall.sh
-
 echo 'Building Gramine SGX'
 echo 'Removing all files initially present'
 make clean
