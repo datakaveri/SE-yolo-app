@@ -58,7 +58,7 @@ sgx.trusted_files = [
   "file:yolov5/",
   "file:/home/iudx/.env/sgx-yolo-app/",
   "file:runyolo5.sh",
-  "file":setState.sh",
+  "file:setState.sh",
   "file:/etc/ssl/certs/ca-certificates.crt",
   "file:config.json"
 ]
