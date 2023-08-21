@@ -1,11 +1,8 @@
 #!/bin/bash
 chmod +x b.sh
+chmod a+x ./setState.sh
+. setState.sh
 
-function call_setstate_endpoint() {
-  local endpoint="http://192.168.1.199:4000/enclave/setstate"
-  local data=$(printf '{"state": {"description": "%s", "maxSteps": %d, "step": %d, "title": "%s"}}' "$1" "$2" "$3" "$4")  local data=$(printf '{"state": {"description": "%s", "maxSteps": %d, "step": %d, "title": "%s"}}' "$1" "$2" "$3" "$4")
-  curl -X POST -H "Content-Type: application/json" -d "$data" "$endpoint"
-}
 #calling setState endpoint (step 3)
 call_setstate_endpoint "Setting up the virtual environment(if not present) & installing dependencies for application" 10 3 "Setting up the environment"
 echo "setting up environment"
