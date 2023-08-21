@@ -1,4 +1,8 @@
 #!/bin/bash
+source ./setState.sh
+
+#calling setState endpoint (step 3)
+call_setstate_endpoint "Setting up the virtual environment(if not present)" 10 3 "Setting up the environment"
 
 #virtual environment 
 DIR=/home/iudx/.env/sgx-yolo-app
@@ -13,6 +17,8 @@ fi
 #source the virtual environment
 . $DIR/bin/activate
 
+#calling setState endpoint (step 4)
+call_setstate_endpoint "Installing dependencies(if not present)" 10 4 "Installing dependencies"
 #install dependencies
 pip3 install -r requirements.txt -r yolov5/requirements.txt
 
@@ -24,12 +30,7 @@ cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 
 cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 
-echo 'Building Gramine SGX'
-echo 'Removing all files initially present'
+
+call_setstate_endpoint "Building manifest" 10 5 "Building manifest"
 make clean
-
-echo 'Setting Remote Attestation type as DCAP'
 make SGX=1 RA_TYPE=dcap
-
-#3. Terminate any previously running enclave
-#nitro-cli terminate-enclave --all
