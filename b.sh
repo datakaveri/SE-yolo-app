@@ -1,4 +1,5 @@
 #!/bin/bash
+chmod +x b.sh
 chmod a+x ./setState.sh
 source ./setState.sh
 
