@@ -1,5 +1,5 @@
 #!/bin/bash
-chmod a+x setState.sh
+chmod a+x ./setState.sh
 source ./setState.sh
 
 #calling setState endpoint (step 3)
