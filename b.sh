@@ -1,8 +1,9 @@
 #!/bin/bash
-source ./setState.sh
+. ./setState.sh
 
 #calling setState endpoint (step 3)
 call_setstate_endpoint "Setting up the virtual environment(if not present) & installing dependencies for application" 10 3 "Setting up the environment"
+echo "setting up environment"
 
 #virtual environment 
 DIR=/home/iudx/.env/sgx-yolo-app
