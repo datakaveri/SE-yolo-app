@@ -1,5 +1,5 @@
 #!/bin/bash
-. ./setState.sh
+source setState.sh
 
 #calling setState endpoint (step 3)
 call_setstate_endpoint "Setting up the virtual environment(if not present) & installing dependencies for application" 10 3 "Setting up the environment"
