@@ -100,7 +100,7 @@ def setState(title,description,step,maxSteps):
 
 with open("config.json") as file:
     config=json.load(file)
-address=config["address"]
+address=config["enclaveManagerAddress"]
 
 #function to call set state endpoint
 def call_set_state_endpoint(state):
