@@ -14,6 +14,7 @@ from cryptography.fernet import Fernet
 import tarfile
 import subprocess
 
+#generate quote to be sent to APD for verification
 def generateQuote():
     key = RSA.generate(2048)
     publicKey=key.publickey().export_key(format='DER')
@@ -28,6 +29,7 @@ def generateQuote():
     print("Quote generated.")
     return quote,b64publicKey, key
 
+#APD verifies quote and releases token
 def getTokenFromAPD(quote,b64publicKey,config):
     apd_url=config["apd_url"]
     headers={'clientId': config["clientId"], 'clientSecret': config["clientSecret"], 'Content-Type': config["Content-Type"]}
@@ -54,6 +56,8 @@ def getTokenFromAPD(quote,b64publicKey,config):
     else:
         print("Quote verification failed.", r.text)
         sys.exit() 
+
+#Send token to resource server for verification & get encrypted images  
 def getFileFromResourceServer(token,config):
     rs_headers={'Authorization': f'Bearer {token}'}
     rs_url=config["rs_url"]
@@ -66,6 +70,7 @@ def getFileFromResourceServer(token,config):
         print("Token authentication failed.",rs.text)
         sys.exit()
 
+#Decrypt images recieved using enclave's private key
 def decryptFile(loadedDict,key):
     b64encryptedKey=loadedDict["encryptedKey"]
     encData=loadedDict["encData"]
@@ -82,17 +87,17 @@ def decryptFile(loadedDict,key):
     tar.extractall('/inputdata')
     print("Images decrypted.",os.listdir('/inputdata'))
 
-
+#run YOLO application inside enclave
 def runYolo():
     print("YOLO invoked...")
-    output=subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
+    subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
 
-
+#function to set state of enclave
 def setState(title,description,step,maxSteps):
     state= {"title":title,"description":description,"step":step,"maxSteps":maxSteps}
     call_set_state_endpoint(state)
 
-
+#function to call set state endpoint
 def call_set_state_endpoint(state):
     #define enpoint url
     endpoint_url="http://192.168.1.199:4000/enclave/setstate"
@@ -106,23 +111,35 @@ def call_set_state_endpoint(state):
     #print response
     print(r.text)
 
-
+#main function
 def main():
     with open("config.json") as file:
         config=json.load(file)
+    
+    #calling set state endpoint (step 6)
     setState("Enclave booted","Enclave booted",6,10)
+
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
+
+    #calling set state endpoint (step 7)
     setState("Encrypted data recieved","Encrypted data recieved",7,10)
+
     decryptFile(loadedDict, key)
+
+    #calling set state endpoint (step 8)
     setState("Decryption completed","Decryption completed",8,10)
+
+    #calling set state endpoint (step 9)
     setState("Executing application","Executing application",9,10)
+
     runYolo()
+
+    #calling set state endpoint (step 10)
     setState("Execution completed","Execution completed",10,10)
 
 
 
 if __name__ == "__main__":
-
     main()
