@@ -13,6 +13,7 @@ from Crypto.Cipher import PKCS1_OAEP
 from cryptography.fernet import Fernet
 import tarfile
 import subprocess
+import urllib.parse
 
 #generate quote to be sent to APD for verification
 def generateQuote():
@@ -97,10 +98,14 @@ def setState(title,description,step,maxSteps):
     state= {"title":title,"description":description,"step":step,"maxSteps":maxSteps}
     call_set_state_endpoint(state)
 
+with open("config.json") as file:
+    config=json.load(file)
+address=config["address"]
+
 #function to call set state endpoint
 def call_set_state_endpoint(state):
     #define enpoint url
-    endpoint_url="http://192.168.1.199:4000/enclave/setstate"
+    endpoint_url=urllib.parse.urljoin(address, '/enclave/setstate')
 
     #create Json payload
     payload = { "state": state }
