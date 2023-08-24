@@ -94,16 +94,12 @@ def runYolo():
     subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
 
 #function to set state of enclave
-def setState(title,description,step,maxSteps):
+def setState(title,description,step,maxSteps,address):
     state= {"title":title,"description":description,"step":step,"maxSteps":maxSteps}
-    call_set_state_endpoint(state)
-
-with open("config.json") as file:
-    config=json.load(file)
-address=config["enclaveManagerAddress"]
+    call_set_state_endpoint(state, address)
 
 #function to call set state endpoint
-def call_set_state_endpoint(state):
+def call_set_state_endpoint(state, address):
     #define enpoint url
     endpoint_url=urllib.parse.urljoin(address, '/enclave/setstate')
 
@@ -120,29 +116,30 @@ def call_set_state_endpoint(state):
 def main():
     with open("config.json") as file:
         config=json.load(file)
+    address=config["enclaveManagerAddress"]
     
     #calling set state endpoint (step 6)
-    setState("Enclave booted","Enclave booted",6,10)
+    setState("Enclave booted","Enclave booted",6,10,address)
 
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
 
     #calling set state endpoint (step 7)
-    setState("Encrypted data recieved","Encrypted data recieved",7,10)
+    setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
 
     decryptFile(loadedDict, key)
 
     #calling set state endpoint (step 8)
-    setState("Decryption completed","Decryption completed",8,10)
+    setState("Decryption completed","Decryption completed",8,10,address)
 
     #calling set state endpoint (step 9)
-    setState("Executing application","Executing application",9,10)
+    setState("Executing application","Executing application",9,10,address)
 
     runYolo()
 
     #calling set state endpoint (step 10)
-    setState("Execution completed","Execution completed",10,10)
+    setState("Execution completed","Execution completed",10,10,address)
 
 
 
