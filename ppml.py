@@ -117,29 +117,29 @@ def call_set_state_endpoint(state, address):
 def main():
     with open("config.json") as file:
         config=json.load(file)
-    profiling=[]
+    address=config["enclaveManagerAddress"]
     with open("profiling.json") as file:
         profiling=json.load(file)
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     profiling['step6']['timestamp'] = timestamp_str
-    setState("Enclave booted","Enclave booted",6,10)
+    setState("Enclave booted","Enclave booted",6,10,address)
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     profiling['step7']['timestamp'] = timestamp_str
-    setState("Encrypted data recieved","Encrypted data recieved",7,10)
+    setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
     decryptFile(loadedDict, key)
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     profiling['step8']['timestamp'] = timestamp_str
-    setState("Decryption completed","Decryption completed",8,10)
-    setState("Executing application","Executing application",9,10)
+    setState("Decryption completed","Decryption completed",8,10,address)
+    setState("Executing application","Executing application",9,10,address)
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     profiling['step9']['timestamp'] = timestamp_str
     runYolo()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     profiling['step10']['timestamp'] = timestamp_str
-    setState("Execution completed","Execution completed",10,10)
+    setState("Execution completed","Execution completed",10,10,address)
 
 
 if __name__ == "__main__":
