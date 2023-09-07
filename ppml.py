@@ -116,31 +116,29 @@ def call_set_state_endpoint(state, address):
 def main():
     with open("config.json") as file:
         config=json.load(file)
-    address=config["enclaveManagerAddress"]
-    
-    #calling set state endpoint (step 6)
-    setState("Enclave booted","Enclave booted",6,10,address)
-
+    profiling=[]
+    with open("profiling.json") as file:
+        profiling=json.load(file)
+    timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    profiling['step6']['timestamp'] = timestamp_str
+    setState("Enclave booted","Enclave booted",6,10)
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
-
-    #calling set state endpoint (step 7)
-    setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
-
+    timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    profiling['step7']['timestamp'] = timestamp_str
+    setState("Encrypted data recieved","Encrypted data recieved",7,10)
     decryptFile(loadedDict, key)
-
-    #calling set state endpoint (step 8)
-    setState("Decryption completed","Decryption completed",8,10,address)
-
-    #calling set state endpoint (step 9)
-    setState("Executing application","Executing application",9,10,address)
-
+    timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    profiling['step8']['timestamp'] = timestamp_str
+    setState("Decryption completed","Decryption completed",8,10)
+    setState("Executing application","Executing application",9,10)
+    timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    profiling['step9']['timestamp'] = timestamp_str
     runYolo()
-
-    #calling set state endpoint (step 10)
-    setState("Execution completed","Execution completed",10,10,address)
-
+    timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    profiling['step10']['timestamp'] = timestamp_str
+    setState("Execution completed","Execution completed",10,10)
 
 
 if __name__ == "__main__":
