@@ -14,6 +14,7 @@ from cryptography.fernet import Fernet
 import tarfile
 import subprocess
 import urllib.parse
+import datetime
 
 #generate quote to be sent to APD for verification
 def generateQuote():
