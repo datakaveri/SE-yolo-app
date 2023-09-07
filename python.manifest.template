@@ -65,5 +65,6 @@ sgx.trusted_files = [
 sgx.allowed_files = [
   "file:yolov5/runs/detect/",
   "file:yolov5/labels.json",
-  "file:yolov5/runOutput.txt"
+  "file:yolov5/runOutput.txt",
+  "file: profling.json"
 ]
