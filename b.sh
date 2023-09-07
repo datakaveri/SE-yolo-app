@@ -31,6 +31,8 @@ cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 
 cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 
+cp /home/iudx/yoloHelper/profiling.json ./
+
 #calling setState endpoint (step 4)
 call_setstate_endpoint "Building manifest" 10 4 "Building manifest"
 make clean
