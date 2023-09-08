@@ -118,28 +118,57 @@ def main():
     with open("config.json") as file:
         config=json.load(file)
     address=config["enclaveManagerAddress"]
-    with open("profiling.json") as file:
-        profiling=json.load(file)
+    data = {
+        "steps": [],
+        "totalTime": 0
+    }
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-    profiling['step6']['timestamp'] = timestamp_str
+    step6 = {
+        "step6": {
+            "timestamp": timestamp_str,
+        }
+    }
+    data["steps"].append(step6)
     setState("Enclave booted","Enclave booted",6,10,address)
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-    profiling['step7']['timestamp'] = timestamp_str
+    step7 = {
+        "step7": {
+            "timestamp": timestamp_str,
+        }
+    }
+    data["steps"].append(step7)
     setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
     decryptFile(loadedDict, key)
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-    profiling['step8']['timestamp'] = timestamp_str
+    step8 = {
+        "step8": {
+            "timestamp": timestamp_str,
+        }
+    }
+    data["steps"].append(step8)
     setState("Decryption completed","Decryption completed",8,10,address)
     setState("Executing application","Executing application",9,10,address)
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-    profiling['step9']['timestamp'] = timestamp_str
+    step9 = {
+        "step9": {
+            "timestamp": timestamp_str,
+        }
+    }
+    data["steps"].append(step9)
     runYolo()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-    profiling['step10']['timestamp'] = timestamp_str
-    setState("Execution completed","Execution completed",10,10,address)
+    step10 = {
+        "step10": {
+            "timestamp": timestamp_str,
+        }
+    }
+    data["steps"].append(step10)
+
+    with open("profiling.json", "w") as file:
+        json.dump(data, file, indent=4)
 
 
 if __name__ == "__main__":
