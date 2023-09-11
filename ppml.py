@@ -15,6 +15,8 @@ import tarfile
 import subprocess
 import urllib.parse
 import datetime
+import psutil
+from memory_profiler import memory_usage
 
 #generate quote to be sent to APD for verification
 def generateQuote():
@@ -113,6 +115,18 @@ def call_set_state_endpoint(state, address):
     #print response
     print(r.text)
 
+# Helper function to record peak memory usage
+def record_peak_memory_usage():
+    memory_usages = memory_usage()
+    return max(memory_usages, default=0)
+
+# Helper function to record CPU usage
+def record_cpu_usage():
+    cpu_percentages = []
+    for _ in range(5):  # Record CPU usage over a short interval (5 measurements)
+        cpu_percentages.append(psutil.cpu_percent(interval=0.1))
+    return sum(cpu_percentages) / len(cpu_percentages)
+
 #main function
 def main():
     with open("config.json") as file:
@@ -122,10 +136,14 @@ def main():
         "steps": [],
         "totalTime": 0
     }
+    peak_memory = record_peak_memory_usage()
+    cpu_usage = record_cpu_usage()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     step6 = {
         "step6": {
             "timestamp": timestamp_str,
+            "memory": peak_memory,
+            "cpu": cpu_usage
         }
     }
     data["steps"].append(step6)
@@ -133,36 +151,52 @@ def main():
     quote, b64publicKey, key= generateQuote()    
     token=getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=getFileFromResourceServer(token, config)
+    peak_memory = record_peak_memory_usage()
+    cpu_usage = record_cpu_usage()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     step7 = {
         "step7": {
             "timestamp": timestamp_str,
+            "memory": peak_memory,
+            "cpu": cpu_usage
         }
     }
     data["steps"].append(step7)
     setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
     decryptFile(loadedDict, key)
+    peak_memory = record_peak_memory_usage()
+    cpu_usage = record_cpu_usage()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     step8 = {
         "step8": {
             "timestamp": timestamp_str,
+            "memory": peak_memory,
+            "cpu": cpu_usage
         }
     }
     data["steps"].append(step8)
     setState("Decryption completed","Decryption completed",8,10,address)
     setState("Executing application","Executing application",9,10,address)
+    peak_memory = record_peak_memory_usage()
+    cpu_usage = record_cpu_usage()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     step9 = {
         "step9": {
             "timestamp": timestamp_str,
+            "memory": peak_memory,
+            "cpu": cpu_usage
         }
     }
     data["steps"].append(step9)
     runYolo()
+    peak_memory = record_peak_memory_usage()
+    cpu_usage = record_cpu_usage()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     step10 = {
         "step10": {
             "timestamp": timestamp_str,
+            "memory": peak_memory,
+            "cpu": cpu_usage
         }
     }
     data["steps"].append(step10)
@@ -170,6 +204,7 @@ def main():
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
 
+    setState("Execution complete","Execution Complete",10,10,address)
 
 if __name__ == "__main__":
     main()
