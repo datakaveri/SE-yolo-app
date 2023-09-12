@@ -97,6 +97,15 @@ def decryptFile(loadedDict,key):
     tar.extractall('/inputdata')
     print("Images decrypted.",os.listdir('/inputdata'))
 
+# Decorator to profile memory usage of a function
+def profile_memory(fn):
+    def profiled_fn(*args, **kwargs):
+        start_memory = memory_usage()[0]
+        result = fn(*args, **kwargs)
+        end_memory = memory_usage()[0]
+        return result, end_memory - start_memory
+    return profiled_fn
+
 #run YOLO application inside enclave
 @profile_memory
 def runYolo():
@@ -133,15 +142,6 @@ def record_cpu_usage():
     for _ in range(5):  # Record CPU usage over a short interval (5 measurements)
         cpu_percentages.append(psutil.cpu_percent(interval=0.1))
     return sum(cpu_percentages) / len(cpu_percentages)
-
-# Decorator to profile memory usage of a function
-def profile_memory(fn):
-    def profiled_fn(*args, **kwargs):
-        start_memory = memory_usage()[0]
-        result = fn(*args, **kwargs)
-        end_memory = memory_usage()[0]
-        return result, end_memory - start_memory
-    return profiled_fn
 
 #main function
 def main():
