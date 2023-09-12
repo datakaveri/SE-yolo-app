@@ -98,6 +98,7 @@ def decryptFile(loadedDict,key):
     print("Images decrypted.",os.listdir('/inputdata'))
 
 #run YOLO application inside enclave
+@profile_memory
 def runYolo():
     print("YOLO invoked...")
     subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
@@ -132,6 +133,15 @@ def record_cpu_usage():
     for _ in range(5):  # Record CPU usage over a short interval (5 measurements)
         cpu_percentages.append(psutil.cpu_percent(interval=0.1))
     return sum(cpu_percentages) / len(cpu_percentages)
+
+# Decorator to profile memory usage of a function
+def profile_memory(fn):
+    def profiled_fn(*args, **kwargs):
+        start_memory = memory_usage()[0]
+        result = fn(*args, **kwargs)
+        end_memory = memory_usage()[0]
+        return result, end_memory - start_memory
+    return profiled_fn
 
 #main function
 def main():
@@ -207,14 +217,14 @@ def main():
         }
     }
     data["steps"].append(step9)
-    runYolo()
-    peak_memory = record_peak_memory_usage()
+    result, memory_diff = runYolo() 
+    #peak_memory = record_peak_memory_usage()
     cpu_usage = record_cpu_usage()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     step10 = {
         "step10": {
             "timestamp": timestamp_str,
-            "memory": peak_memory,
+            "memory": memory_diff,
             "cpu": cpu_usage
         }
     }
