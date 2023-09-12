@@ -19,7 +19,7 @@ import psutil
 from memory_profiler import memory_usage
 
 #generate quote to be sent to APD for verification
-def generateQuote():
+def generateQuote(memory_usage_in_generateQuote):
     key = RSA.generate(2048)
     publicKey=key.publickey().export_key(format='DER')
     privateKey=key.export_key(format='DER')
@@ -31,10 +31,12 @@ def generateQuote():
     with open("/dev/attestation/quote", "rb") as f:
         quote = f.read()
     print("Quote generated.")
+    peak_memory = record_peak_memory_usage()
+    memory_usage_in_generateQuote.append(peak_memory)
     return quote,b64publicKey, key
 
 #APD verifies quote and releases token
-def getTokenFromAPD(quote,b64publicKey,config):
+def getTokenFromAPD(quote,b64publicKey,config,memory_usage_in_getTokenFromAPD):
     apd_url=config["apd_url"]
     headers={'clientId': config["clientId"], 'clientSecret': config["clientSecret"], 'Content-Type': config["Content-Type"]}
     b64quote=base64.b64encode(quote)
@@ -52,6 +54,8 @@ def getTokenFromAPD(quote,b64publicKey,config):
          }
     dataJson=json.dumps(data)
     r= requests.post(apd_url,headers=headers,data=dataJson)
+    peak_memory = record_peak_memory_usage()
+    memory_usage_in_getTokenFromAPD.append(peak_memory)
     if(r.status_code==200):
         print("Quote verified and Token recieved.")
         jsonResponse=r.json()
@@ -62,10 +66,12 @@ def getTokenFromAPD(quote,b64publicKey,config):
         sys.exit() 
 
 #Send token to resource server for verification & get encrypted images  
-def getFileFromResourceServer(token,config):
+def getFileFromResourceServer(token,config, memory_usage_in_getFileFromResourceServer):
     rs_headers={'Authorization': f'Bearer {token}'}
     rs_url=config["rs_url"]
     rs=requests.get(rs_url,headers=rs_headers)
+    peak_memory = record_peak_memory_usage()
+    memory_usage_in_getFileFromResourceServer.append(peak_memory)
     if(rs.status_code==200):
         print("Token authenticated and Encrypted images recieved.")
         loadedDict=pickle.loads(rs.content)
@@ -148,16 +154,29 @@ def main():
     }
     data["steps"].append(step6)
     setState("Enclave booted","Enclave booted",6,10,address)
-    quote, b64publicKey, key= generateQuote()    
-    token=getTokenFromAPD(quote, b64publicKey, config)
-    loadedDict=getFileFromResourceServer(token, config)
-    peak_memory = record_peak_memory_usage()
-    cpu_usage = record_cpu_usage()
+
+    memory_usage_in_generateQuote = []
+    memory_usage_in_getTokenFromAPD = []
+    memory_usage_in_getFileFromResourceServer = []
+
+    quote, b64publicKey, key= generateQuote(memory_usage_in_generateQuote)    
+    token=getTokenFromAPD(quote, b64publicKey, config, memory_usage_in_getTokenFromAPD)
+    loadedDict=getFileFromResourceServer(token, config, memory_usage_in_getFileFromResourceServer)
+    
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    average_memory_usage_step7 = (
+        sum(memory_usage_in_generateQuote) +
+        sum(memory_usage_in_getTokenFromAPD) +
+        sum(memory_usage_in_getFileFromResourceServer)
+    ) / (
+        len(memory_usage_in_generateQuote) +
+        len(memory_usage_in_getTokenFromAPD) +
+        len(memory_usage_in_getFileFromResourceServer)
+    )
     step7 = {
         "step7": {
             "timestamp": timestamp_str,
-            "memory": peak_memory,
+            "memory": average_memory_usage_step7,
             "cpu": cpu_usage
         }
     }
