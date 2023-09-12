@@ -17,6 +17,7 @@ import urllib.parse
 import datetime
 import psutil
 from memory_profiler import memory_usage
+import tracemalloc  
 
 #generate quote to be sent to APD for verification
 def generateQuote(memory_usage_in_generateQuote):
@@ -109,8 +110,16 @@ def profile_memory(fn):
 #run YOLO application inside enclave
 @profile_memory
 def runYolo():
+    tracemalloc.start()
     print("YOLO invoked...")
     subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
+    tracemalloc.stop()
+
+    memory_stats = tracemalloc.get_traced_memory()
+    print(memory_stats)
+    total_memory_used = memory_stats[1]
+    total_memory_used_mb = total_memory_used / (1024 * 1024)
+    return total_memory_used_mb
 
 #function to set state of enclave
 def setState(title,description,step,maxSteps,address):
@@ -217,7 +226,7 @@ def main():
         }
     }
     data["steps"].append(step9)
-    result, memory_diff = runYolo() 
+    memory_diff = runYolo() 
     #peak_memory = record_peak_memory_usage()
     cpu_usage = record_cpu_usage()
     timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
