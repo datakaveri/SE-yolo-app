@@ -14,6 +14,14 @@ import tarfile
 import urllib.parse
 import datetime
 
+data = {
+        "input":{
+            "images": 0
+        },
+        "stepsProfile": [],
+        "totalTime": 0
+    }
+
 #generate quote to be sent to APD for verification
 def generateQuote():
     key = RSA.generate(2048)
@@ -103,7 +111,8 @@ def call_set_state_endpoint(state, address):
     print(r.text)
 
 #profiling function: timestamp, memory & CPU
-def profiling_endpoint(description, stepno,data):
+def profiling_endpoint(description, stepno):
+    global data
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
     step = {
         "step"+str(stepno): {
@@ -116,7 +125,8 @@ def profiling_endpoint(description, stepno,data):
         json.dump(data, file, indent=4)
 
 #profiling: input data
-def profiling_input(data):
+def profiling_input():
+    global data
     extracted_directory = '/inputdata'
     files_in_directory = os.listdir(extracted_directory)
     image_extensions = ['.jpg', '.jpeg']
