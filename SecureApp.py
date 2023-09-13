@@ -30,17 +30,6 @@ def secureApp():
     token=PPDX_SDK.getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=PPDX_SDK.getFileFromResourceServer(token, config)
 
-    #input data
-    extracted_directory = '/inputdata'
-    files_in_directory = os.listdir(extracted_directory)
-    image_extensions = ['.jpg', '.jpeg']
-    image_count = 0
-    for file_name in files_in_directory:
-        if any(file_name.lower().endswith(ext) for ext in image_extensions):
-            image_count += 1
-
-    data["input"]["images"] = image_count
-
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
     step7 = {
         "step7": {
@@ -61,6 +50,17 @@ def secureApp():
     }
     data["stepsProfile"].append(step8)
     PPDX_SDK.setState("Decryption completed","Decryption completed",8,10,address)
+
+    #input data
+    extracted_directory = '/inputdata'
+    files_in_directory = os.listdir(extracted_directory)
+    image_extensions = ['.jpg', '.jpeg']
+    image_count = 0
+    for file_name in files_in_directory:
+        if any(file_name.lower().endswith(ext) for ext in image_extensions):
+            image_count += 1
+
+    data["input"]["images"] = image_count
 
     
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
