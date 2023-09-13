@@ -23,7 +23,7 @@ def secureApp():
             "timestamp": timestamp_str
         }
     }
-    data["steps"].append(step6)
+    data["stepsProfile"].append(step6)
     PPDX_SDK.setState("Enclave booted","Enclave booted",6,10,address)
 
     quote, b64publicKey, key= PPDX_SDK.generateQuote()    
@@ -48,7 +48,7 @@ def secureApp():
             "timestamp": timestamp_str
         }
     }
-    data["steps"].append(step7)
+    data["stepsProfile"].append(step7)
     PPDX_SDK.setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
 
     PPDX_SDK.decryptFile(loadedDict, key)
@@ -59,7 +59,7 @@ def secureApp():
             "timestamp": timestamp_str
         }
     }
-    data["steps"].append(step8)
+    data["stepsProfile"].append(step8)
     PPDX_SDK.setState("Decryption completed","Decryption completed",8,10,address)
 
     
@@ -70,7 +70,7 @@ def secureApp():
             "timestamp": timestamp_str
         }
     }
-    data["steps"].append(step9)
+    data["stepsProfile"].append(step9)
     PPDX_SDK.setState("Executing application","Executing application",9,10,address)
     PPDX_SDK.runYolo()
     
@@ -81,7 +81,7 @@ def secureApp():
             "timestamp": timestamp_str
         }
     }
-    data["steps"].append(step10)
+    data["stepsProfile"].append(step10)
 
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
