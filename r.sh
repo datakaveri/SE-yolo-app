@@ -1,2 +1,2 @@
 # Run new enclave
-gramine-sgx ./python ppml.py
+gramine-sgx ./python runSecureApp.py

@@ -10,7 +10,7 @@ This repository implements Secure Enclaves by Intel SGX to run YOLO machine lear
 4. Build the application.     
     `make SGX=1 RA_TYPE=dcap`
 5. Run the application.    
-    `gramine-sgx ./python ppml.py`
+    `gramine-sgx ./python runSecureApp.py`
 6. Remove the manifest, input files and output files.   
     `make clean`   
 
