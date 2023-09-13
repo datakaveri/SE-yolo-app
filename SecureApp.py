@@ -83,8 +83,6 @@ def secureApp():
     }
     data["stepsProfile"].append(step10)
 
+    #adding profiling data
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
-
-    PPDX_SDK.setState("Execution complete","Execution Complete",10,10,address)
-
