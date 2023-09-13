@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import sys
 import Crypto
@@ -12,11 +11,8 @@ import _pickle as pickle
 from Crypto.Cipher import PKCS1_OAEP
 from cryptography.fernet import Fernet
 import tarfile
-import subprocess
 import urllib.parse
-#import psutil
-#rom memory_profiler import memory_usage
-#import tracemalloc  
+import datetime
 
 #generate quote to be sent to APD for verification
 def generateQuote():
@@ -61,9 +57,8 @@ def getTokenFromAPD(quote,b64publicKey,config):
         sys.exit() 
 
 #Send token to resource server for verification & get encrypted images  
-def getFileFromResourceServer(token,config):
+def getFileFromResourceServer(token,rs_url):
     rs_headers={'Authorization': f'Bearer {token}'}
-    rs_url=config["rs_url"]
     rs=requests.get(rs_url,headers=rs_headers)
     if(rs.status_code==200):
         print("Token authenticated and Encrypted images recieved.")
@@ -89,11 +84,6 @@ def decryptFile(loadedDict,key):
     tar.extractall('/inputdata')
     print("Images decrypted.",os.listdir('/inputdata'))
 
-#Run YOLO
-def runYolo():
-    print("YOLO invoked...")
-    subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
-
 #function to set state of enclave
 def setState(title,description,step,maxSteps,address):
     state= {"title":title,"description":description,"step":step,"maxSteps":maxSteps}
@@ -111,3 +101,71 @@ def call_set_state_endpoint(state, address):
 
     #print response
     print(r.text)
+
+#profiling function: timestamp, memory & CPU
+def profiling_endpoint(description, stepno,data):
+    timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
+    step = {
+        "step"+str(stepno): {
+            "description": description,
+            "timestamp": timestamp_str
+        }   
+    }
+    data["stepsProfile"].append(step)
+    with open("profiling.json", "w") as file:
+        json.dump(data, file, indent=4)
+
+#profiling: input data
+def profiling_input(data):
+    extracted_directory = '/inputdata'
+    files_in_directory = os.listdir(extracted_directory)
+    image_extensions = ['.jpg', '.jpeg']
+    image_count = 0
+    for file_name in files_in_directory:
+        if any(file_name.lower().endswith(ext) for ext in image_extensions):
+            image_count += 1
+
+    data["input"]["images"] = image_count
+    with open("profiling.json", "w") as file:
+        json.dump(data, file, indent=4)
+
+
+#Chunk Functions:
+
+def dataChunkN(n, url, access_token, key):
+    loadedDict=getChunkFromResourceServer(n, url, access_token)
+    if loadedDict:
+        decryptChunk(loadedDict, key)
+        return 1
+    else:
+        return 0 
+    
+def getChunkFromResourceServer (n,url,token):
+    print("Getting chunk from the resource server..")
+    rs_headers={'Authorization': f'Bearer {token}'}
+    rs_url = f"{url}{n}"
+    print(rs_url)
+    rs=requests.get(rs_url,headers=rs_headers)
+    if(rs.status_code==200):
+        print("Token authenticated and Encrypted images recieved.")
+        loadedDict=pickle.loads(rs.content)
+        print(loadedDict.keys())
+        return loadedDict
+    else:
+        print(rs.text)
+        return None
+
+def decryptChunk(loadedDict,key):
+    print("Decrypting chunk..")
+    b64encryptedKey=loadedDict["encryptedKey"]
+    encData=loadedDict["encData"]
+    encryptedKey=base64.b64decode(b64encryptedKey)
+    decryptor = PKCS1_OAEP.new(key)
+    plainKey=decryptor.decrypt(encryptedKey)
+    print("Symmetric key decrypted using the enclave's private RSA key.")
+    fernetKey = Fernet(plainKey)
+    decryptedData = fernetKey.decrypt(encData)
+    print(os.listdir("../"))
+    with open('../inputdata/outfile.gz', "wb") as f:
+        f.write(decryptedData)
+    print("Chunk decrypted and saved in /inputdata/outfile.gz.")
