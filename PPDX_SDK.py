@@ -103,7 +103,7 @@ def call_set_state_endpoint(state, address):
     print(r.text)
 
 #profiling function: timestamp, memory & CPU
-def profiling_endpoint(description, stepno):
+def profiling_steps(description, stepno):
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
@@ -133,6 +133,26 @@ def profiling_input():
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
 
+def profiling_totalTime():
+    with open("profiling.json", "r") as file:
+        data = json.load(file)
+    # Check if "step1" and "step10" exist in the data
+    if "step1" in data["stepsProfile"] and "step10" in data["stepsProfile"]:
+        # Get the timestamps of "step1" and "step10"
+        timestamp_step1 = data["stepsProfile"]["step1"]["timestamp"]
+        timestamp_step10 = data["stepsProfile"]["step10"]["timestamp"]
+
+        # Convert timestamps to datetime objects (you'll need to import datetime)
+        from datetime import datetime
+        time_format = "%Y-%m-%dT%H:%M:%SZ"
+        dt_step1 = datetime.strptime(timestamp_step1, time_format)
+        dt_step10 = datetime.strptime(timestamp_step10, time_format)
+
+        # Calculate the time difference in seconds
+        time_difference = (dt_step10 - dt_step1).total_seconds()
+
+        with open("profiling.json", "w") as file:
+            data["totalTime"] = time_difference
 
 #Chunk Functions:
 
