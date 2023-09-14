@@ -136,12 +136,21 @@ def profiling_input():
 def profiling_totalTime():
     with open("profiling.json", "r") as file:
         data = json.load(file)
-    # Check if "step1" and "step10" exist in the data
-    if "step1" in data["stepsProfile"] and "step10" in data["stepsProfile"]:
-        # Get the timestamps of "step1" and "step10"
-        timestamp_step1 = data["stepsProfile"]["step1"]["timestamp"]
-        timestamp_step10 = data["stepsProfile"]["step10"]["timestamp"]
+    timestamp_step1 = None
+    timestamp_step10 = None
 
+    # Iterate through the list of steps to find "step1" and "step10"
+    for step in data["stepsProfile"]:
+        step_label = list(step.keys())[0]  # Extract the step label, e.g., "step1"
+        step_data = list(step.values())[0]  # Extract the step data
+
+        if step_label == "step1":
+            timestamp_step1 = step_data["timestamp"]
+        elif step_label == "step10":
+            timestamp_step10 = step_data["timestamp"]
+
+    # Check if both timestamps were found
+    if timestamp_step1 is not None and timestamp_step10 is not None:
         # Convert timestamps to datetime objects (you'll need to import datetime)
         from datetime import datetime
         time_format = "%Y-%m-%dT%H:%M:%SZ"
@@ -149,11 +158,18 @@ def profiling_totalTime():
         dt_step10 = datetime.strptime(timestamp_step10, time_format)
 
         # Calculate the time difference in seconds
-        time_difference = (dt_step10 - dt_step1).total_seconds()
+        time_difference_seconds = (dt_step10 - dt_step1).total_seconds()
 
-        with open("profiling.json", "w") as file:
-            data["totalTime"] = time_difference
+        # Convert seconds to minutes and seconds
+        minutes = int(time_difference_seconds // 60)
+        seconds = int(time_difference_seconds % 60)
 
+        # Add the total time to the data dictionary
+        data["totalTime"] = {"minutes": minutes, "seconds": seconds}
+
+        # Write the updated data back to "profiling.json"
+        with open("profiling.json", "w") as output_file:
+            json.dump(data, output_file, indent=4)
 #Chunk Functions:
 
 def dataChunkN(n, url, access_token, key):
