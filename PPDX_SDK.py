@@ -108,9 +108,10 @@ def profiling_endpoint(description, stepno):
         data = json.load(file)
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
     step = {
-            "step": stepno,
+        "step"+str(stepno): {
             "description": description,
             "timestamp": timestamp_str
+        }   
     }
     data["stepsProfile"].append(step)
     with open("profiling.json", "w") as file:
