@@ -5,4 +5,4 @@ data=$(cat profiling.json)
 #calling profiling_func (step 5)
 data = profiling_func 5 "Starting Application in SGX Enclave" "$data"
 # Run new enclave
-gramine-sgx ./python runSecureApp.py
+gramine-sgx ./python SecureApp.py

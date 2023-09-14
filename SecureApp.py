@@ -33,3 +33,13 @@ def secureApp():
     print("YOLO completed.")
 
     PPDX_SDK.profiling_endpoint("Execution Completed", 10)
+
+
+with open("config.json", "r") as file:
+        config= json.load(file)
+address=config["enclaveManagerAddress"]
+
+print("Now I am starting...")
+secureApp()
+print("Now I am done..")
+PPDX_SDK.setState("Execution Complete","Execution Complete",10,10,address)
