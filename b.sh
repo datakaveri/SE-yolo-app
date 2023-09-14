@@ -5,10 +5,9 @@ chmod a+x ./setState.sh
 . ./profilingStep.sh
 
 cp /home/iudx/sgx-enclave-manager/profiling.json ./
-data=$(cat profiling.json)
 
 #calling profiling_func (step 3)
-data=$(profiling_func 3 "Setting up the virtual environment(if not present) & installing dependencies for application" "$data")
+profiling_func 3 "Setting up the virtual environment(if not present) & installing dependencies for application" 
 #calling setState endpoint (step 3)
 call_setstate_endpoint "Setting up the virtual environment(if not present) & installing dependencies for application" 10 3 "Setting up the environment"
 echo "setting up environment"
@@ -38,7 +37,7 @@ cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 
 #calling profiling_func (step 4)
-data=$(profiling_func 4 "Building manifest" "$data")
+profiling_func 4 "Building manifest" 
 #calling setState endpoint (step 4)
 call_setstate_endpoint "Building manifest" 10 4 "Building manifest"
 make clean
