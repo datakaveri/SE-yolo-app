@@ -27,12 +27,11 @@ function profiling_func() {
         updated_data=$(echo "$data" | jq --arg stepno "$stepno" --arg description "$description" --arg timestamp "$timestamp" '.stepsProfile[] |= if has($stepno) then .[$stepno].description = $description | .[$stepno].timestamp = $timestamp else . end')
     else
         # Construct the step object
-        local step_object="{\"$stepno\": {\"description\": \"$description\", \"timestamp\": \"$timestamp\"}}"
+        local step_object="{\"step$stepno\": {\"description\": \"$description\", \"timestamp\": \"$timestamp\"}}"
         
         # Add the step object to 'stepsProfile' array
         updated_data=$(echo "$data" | jq --argjson step "$step_object" '.stepsProfile += [$step]')
     fi
-
 
     # Write to file
     echo "$updated_data" > profiling.json
