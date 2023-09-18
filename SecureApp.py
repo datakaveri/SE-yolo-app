@@ -38,7 +38,7 @@ address=config["enclaveManagerAddress"]
 
 print("Now I am starting...")
 secureApp()
-print("Now I am done..")
 PPDX_SDK.profiling_steps("Execution Completed", 10)
 PPDX_SDK.profiling_totalTime()
 PPDX_SDK.setState("Execution Complete","Execution Complete",10,10,address)
+print("Now I am done..")
