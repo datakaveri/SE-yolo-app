@@ -1,3 +1,6 @@
+. ./setState.sh
+. ./profilingStep.sh
+
 #call set state endpoint
 call_setstate_endpoint "Starting Application in SGX Enclave" 10 5 "Starting Application in SGX Enclave"
 
