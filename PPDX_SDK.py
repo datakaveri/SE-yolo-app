@@ -51,6 +51,7 @@ def getTokenFromAPD(quote,b64publicKey,config):
         print("Quote verified and Token recieved.")
         jsonResponse=r.json()
         token=jsonResponse.get('results').get('accessToken')
+        print(token)
         return token
     else:
         print("Quote verification failed.", r.text)
