@@ -38,7 +38,7 @@ def secureApp():
     print("YOLO invoked...")
     subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
     print("YOLO completed.")
-    PPDX_SDK.measure_memory_usage()
+    measure_memory_usage_subprocess()
 
 with open("config.json", "r") as file:
         config= json.load(file)
@@ -50,3 +50,14 @@ PPDX_SDK.profiling_steps("Execution Completed", 10)
 PPDX_SDK.profiling_totalTime()
 PPDX_SDK.setState("Execution Complete","Execution Complete",10,10,address)
 print("Now I am done..")
+
+
+def measure_memory_usage_subprocess():
+    # Get the PID of the YOLO subprocess
+    p = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE)
+    yolo_pid = p.pid
+    
+    # Measure memory usage of the YOLO subprocess
+    output = subprocess.check_output(["ps", "-o", "rss", "-p", str(yolo_pid)])
+    memory_usage = int(output.decode().strip()) / 1024  # Convert to MB
+    print(f"Memory usage of YOLO subprocess: {memory_usage} MB")
