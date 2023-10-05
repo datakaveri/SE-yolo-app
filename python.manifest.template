@@ -24,8 +24,8 @@ fs.mounts = [
   { path = "/bin", uri = "file:/bin" },
   { path = "/env", uri = "file:/home/iudx/.env/sgx-yolo-app/" },
   { path = "/runyolo5.sh", uri = "file:runyolo5.sh"},
-  { type = "encrypted", path = "/inputdata/", uri = "file:inputdata/", key_name = "_sgx_mrsigner" },
-
+  { path = "/proc", uri="file:proc/"},
+  { type = "encrypted", path = "/inputdata/", uri = "file:inputdata/", key_name = "_sgx_mrsigner" }
 ]
 
 sys.enable_sigterm_injection = true
@@ -67,5 +67,6 @@ sgx.allowed_files = [
   "file:yolov5/runs/detect/",
   "file:yolov5/labels.json",
   "file:yolov5/runOutput.txt",
-  "file:profiling.json"
+  "file:profiling.json",
+  "file:proc/"
 ]
