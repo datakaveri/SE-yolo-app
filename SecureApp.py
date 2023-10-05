@@ -36,10 +36,10 @@ def secureApp():
     PPDX_SDK.profiling_steps("Executing application", 9)
     PPDX_SDK.setState("Executing application","Executing application",9,10,address)
     print("YOLO invoked...")
-    subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
-    print("YOLO completed.")
+    #subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
     measure_memory_usage_subprocess()
-
+    print("YOLO completed.")
+    
 with open("config.json", "r") as file:
         config= json.load(file)
 address=config["enclaveManagerAddress"]
@@ -53,7 +53,7 @@ print("Now I am done..")
 
 
 def measure_memory_usage_subprocess():
-    # Get the PID of the YOLO subprocess
+    # Run the YOLO subprocess and obtain its PID
     p = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE)
     yolo_pid = p.pid
     
