@@ -13,6 +13,7 @@ from cryptography.fernet import Fernet
 import tarfile
 import urllib.parse
 import datetime
+import psutil
 
 #generate quote to be sent to APD for verification
 def generateQuote():
@@ -210,3 +211,8 @@ def decryptChunk(loadedDict,key):
     with open('../inputdata/outfile.gz', "wb") as f:
         f.write(decryptedData)
     print("Chunk decrypted and saved in /inputdata/outfile.gz.")
+
+def measure_memory_usage():
+    process = psutil.Process()
+    memory = process.memory_info().rss / (1024 * 1024)  # in MB
+    print(f" memory usage: {memory:.2f} MB")
