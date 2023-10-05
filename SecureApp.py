@@ -1,17 +1,29 @@
 import PPDX_SDK
 import json
 import subprocess
+import time
 
 def measure_memory_usage_subprocess():
     # Run the YOLO subprocess and obtain its PID
     p = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE)
     yolo_pid = p.pid
     
-    # Measure memory usage of the YOLO subprocess
-    output = subprocess.check_output(["ps", "-o", "rss", "-p", str(yolo_pid)])
-    memory_usage = int(output.decode().strip()) / 1024  # Convert to MB
-    print(f"Memory usage of YOLO subprocess: {memory_usage} MB")
+    max_memory_usage = 0  # Initialize max memory usage
     
+    # Measure memory usage of the YOLO subprocess every 10 seconds
+    while p.poll() is None:
+        output = subprocess.check_output(["ps", "-o", "rss", "-p", str(yolo_pid)])
+        memory_usage = int(output.decode().strip()) / 1024  # Convert to MB
+        
+        # Update maximum memory usage if needed
+        if memory_usage > max_memory_usage:
+            max_memory_usage = memory_usage
+        
+        print(f"Current memory usage of YOLO subprocess: {memory_usage:.2f} MB")
+        time.sleep(10)  # Sleep for 10 seconds between measurements
+    
+    print(f"Maximum memory usage of YOLO subprocess: {max_memory_usage:.2f} MB")
+
 def secureApp():
     #step 6
     PPDX_SDK.measure_memory_usage()
