@@ -3,38 +3,42 @@ import json
 import subprocess
 
 def secureApp():
+    #step 6
+    PPDX_SDK.measure_memory_usage()
     with open("config.json") as file:
         config=json.load(file)
     address=config["enclaveManagerAddress"]
     rs_url=config["rs_url"]
-
+    
     PPDX_SDK.profiling_steps("Enclave Booted", 6)
     PPDX_SDK.setState("Enclave booted","Enclave booted",6,10,address)
 
+    #step 7
     PPDX_SDK.measure_memory_usage()
-    print("starting step 7")
     quote, b64publicKey, key= PPDX_SDK.generateQuote()    
     token=PPDX_SDK.getTokenFromAPD(quote, b64publicKey, config)
     loadedDict=PPDX_SDK.getFileFromResourceServer(token, rs_url)
-    print("step 7 done")
     PPDX_SDK.measure_memory_usage()
-    
     PPDX_SDK.profiling_steps("Encrypted data recieved", 7)
     PPDX_SDK.setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
 
+    #step 8
+    PPDX_SDK.measure_memory_usage()
     PPDX_SDK.decryptFile(loadedDict, key)
-
     PPDX_SDK.profiling_steps("Decryption completed", 8)
     PPDX_SDK.setState("Decryption completed","Decryption completed",8,10,address)
+    PPDX_SDK.measure_memory_usage()
 
     PPDX_SDK.profiling_input()
     
+    #step 9
+    PPDX_SDK.measure_memory_usage()
     PPDX_SDK.profiling_steps("Executing application", 9)
     PPDX_SDK.setState("Executing application","Executing application",9,10,address)
-    
     print("YOLO invoked...")
     subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
     print("YOLO completed.")
+    PPDX_SDK.measure_memory_usage()
 
 with open("config.json", "r") as file:
         config= json.load(file)

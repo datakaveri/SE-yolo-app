@@ -7,6 +7,7 @@ chmod a+x ./setState.sh
 cp /home/iudx/sgx-enclave-manager/profiling.json ./
 
 #calling profiling_func (step 3)
+python3 -c 'import PPDX_SDK; PPDX_SDK.measure_memory_usage()'
 profiling_func 3 "Setting up the virtual environment(if not present) & installing dependencies for application" 
 #calling setState endpoint (step 3)
 call_setstate_endpoint "Setting up the virtual environment(if not present) & installing dependencies for application" 10 3 "Setting up the environment"
@@ -36,9 +37,17 @@ cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 
 cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 
+#step 3 done
+python3 -c 'import PPDX_SDK; PPDX_SDK.measure_memory_usage()'
+
+
 #calling profiling_func (step 4)
+python3 -c 'import PPDX_SDK; PPDX_SDK.measure_memory_usage()'
 profiling_func 4 "Building manifest" 
 #calling setState endpoint (step 4)
 call_setstate_endpoint "Building manifest" 10 4 "Building manifest"
 make clean
 make SGX=1 RA_TYPE=dcap
+
+#step 4 done
+python3 -c 'import PPDX_SDK; PPDX_SDK.measure_memory_usage()'
