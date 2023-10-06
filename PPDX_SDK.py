@@ -28,6 +28,9 @@ def generateQuote():
     with open("/dev/attestation/quote", "rb") as f:
         quote = f.read()
     print("Quote generated.")
+    print("*********************************")
+    print(quote)
+    print("*********************************")
     return quote,b64publicKey, key
 
 #APD verifies quote and releases token
