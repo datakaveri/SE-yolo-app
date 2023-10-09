@@ -61,7 +61,7 @@ sgx.trusted_files = [
   "file:setState.sh",
   "file:/etc/ssl/certs/ca-certificates.crt",
   "file:config.json",
-  "file:/proc"
+  "file:/proc/"
 ]
 
 sgx.allowed_files = [
