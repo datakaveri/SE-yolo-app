@@ -66,11 +66,14 @@ def secureApp():
         memory_usage= measure_memory_usage(process)
 
         if memory_usage is not None:
-            memory_data.append(memory_usage)
+            print(f"Memory usage: {memory_usage:.2f} MB")
+            memory_data.append({"timestamp": time.time(), "memory_usage_mb": memory_usage})
+        else:
+            print("Memory usage: N/A")
 
         # Write memory data to a JSON file
         with open('memory_data.json', 'w') as json_file:
-            json.dump(memory_usage, json_file)
+            json.dump(memory_data, json_file)
         print("Memory data written to memory_data.json.")
 
         # Sleep for 10 seconds
