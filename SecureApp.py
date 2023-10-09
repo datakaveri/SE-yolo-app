@@ -8,8 +8,9 @@ def measure_memory_usage(process):
     try:
         # Get the process associated with the given PID
         #process = psutil.Process(pid)
+        process_info = psutil.Process(process.pid)
         # Measure memory usage using psutil
-        memory_info = process.memory_info()
+        memory_info = process_info.memory_info()
         # Convert bytes to megabytes (MB)
         total_memory_usage = memory_info.rss / (1024 * 1024)  # Total memory usage in MB (using RSS)
         return total_memory_usage
