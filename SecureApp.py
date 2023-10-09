@@ -4,16 +4,15 @@ import subprocess
 import time
 import psutil
 
-def measure_memory_usage_subprocess(pid, max_memory):
+def measure_memory_usage(pid):
     try:
         # Get the process associated with the given PID
         process = psutil.Process(pid)
         # Measure memory usage using psutil
         memory_info = process.memory_info()
-        total_memory_usage = (memory_info.rss + memory_info.vms)/ (1024 * 1024)  # Total memory usage
-        if(total_memory_usage>max_memory):
-            max_memory=total_memory_usage
-        return total_memory_usage, max_memory
+        # Convert bytes to megabytes (MB)
+        total_memory_usage = memory_info.rss / (1024 * 1024)  # Total memory usage in MB (using RSS)
+        return total_memory_usage
     except psutil.NoSuchProcess:
         return None
 
@@ -58,11 +57,15 @@ def secureApp():
     process = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     max_memory=0
     pid = process.pid
+    memory_data = []
     print(f"Process ID: {pid}")
     while process.poll() is None:
         # Measure memory usage using the PID
         print("Measuring memory usage...")
-        memory_usage,max_memory = measure_memory_usage_subprocess(pid, max_memory)
+        memory_usage= measure_memory_usage(pid)
+
+        if memory_usage is not None:
+            memory_data.append(memory_usage)
 
         # Write memory data to a JSON file
         with open('memory_data.json', 'w') as json_file:
@@ -74,7 +77,7 @@ def secureApp():
         time.sleep(10)
 
     # Print the maximum memory usage
-    print(f"Maximum memory usage: {max_memory:.2f} MB")
+    #print(f"Maximum memory usage: {max_memory:.2f} MB")
     print("Process finished. Memory data written to memory_data.json.")
     print("YOLO completed.")
 
