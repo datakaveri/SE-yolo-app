@@ -4,10 +4,10 @@ import subprocess
 import time
 import psutil
 
-def measure_memory_usage(pid):
+def measure_memory_usage(process):
     try:
         # Get the process associated with the given PID
-        process = psutil.Process(pid)
+        #process = psutil.Process(pid)
         # Measure memory usage using psutil
         memory_info = process.memory_info()
         # Convert bytes to megabytes (MB)
@@ -62,7 +62,7 @@ def secureApp():
     while process.poll() is None:
         # Measure memory usage using the PID
         print("Measuring memory usage...")
-        memory_usage= measure_memory_usage(pid)
+        memory_usage= measure_memory_usage(process)
 
         if memory_usage is not None:
             memory_data.append(memory_usage)

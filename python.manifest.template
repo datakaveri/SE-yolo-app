@@ -31,7 +31,7 @@ sys.enable_sigterm_injection = true
 sys.stack.size = "2M"
 sys.enable_extra_runtime_domain_names_conf = true
 
-sgx.debug = true
+sgx.debug = false
 sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
 sgx.nonpie_binary = true
 sgx.enclave_size = "8G"
