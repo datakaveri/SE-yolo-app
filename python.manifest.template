@@ -60,7 +60,8 @@ sgx.trusted_files = [
   "file:runyolo5.sh",
   "file:setState.sh",
   "file:/etc/ssl/certs/ca-certificates.crt",
-  "file:config.json"
+  "file:config.json",
+  "file:/proc"
 ]
 
 sgx.allowed_files = [
