@@ -60,14 +60,17 @@ def secureApp():
     pid = process.pid
     while process.poll() is None:
         # Measure memory usage using the PID
-        memory_usage,max_memory = measure_memory_usage_subprocess(pid)
-
-        # Sleep for 10 seconds
-        time.sleep(10)
+        print("Measuring memory usage...")
+        memory_usage,max_memory = measure_memory_usage_subprocess(pid, max_memory)
 
         # Write memory data to a JSON file
         with open('memory_data.json', 'w') as json_file:
             json.dump(memory_usage, json_file)
+        print("Memory data written to memory_data.json.")
+
+        # Sleep for 10 seconds
+        print("Sleeping for 10 seconds...")
+        time.sleep(10)
 
     # Print the maximum memory usage
     print(f"Maximum memory usage: {max_memory:.2f} MB")
