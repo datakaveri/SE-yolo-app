@@ -4,17 +4,22 @@ import subprocess
 import time
 import psutil
 
+def measure_memory_usage():
+    memory_info = psutil.virtual_memory()
+    total_memory_usage = memory_info.percent  # Total memory usage percentage
+    return total_memory_usage
+
 def measure_memory_usage(process):
     try:
         # Get the process associated with the given PID
         #process = psutil.Process(pid)
-        process_info = psutil.Process(process.pid)
+        #process_info = psutil.Process(process.pid)
         # Measure memory usage using psutil
-        memory_info = process_info.memory_info()
+        memory_info = process.memory_info() # in bytes  
         # Convert bytes to megabytes (MB)
         total_memory_usage = memory_info.rss / (1024 * 1024)  # Total memory usage in MB (using RSS)
         return total_memory_usage
-    except psutil.NoSuchProcess:
+    except psutil.NoSuchProcess or psutil.AccessDenied :
         return None
 
 def secureApp():
