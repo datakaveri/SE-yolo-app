@@ -4,59 +4,47 @@ import subprocess
 import time
 import psutil
 
-def measure_memory_usage_subprocess():
-    # Run the YOLO subprocess and obtain its PID
-    p = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE)
-    yolo_pid = p.pid
-    
-    max_memory_usage = 0  # Initialize max memory usage
-    
-    # Measure memory usage of the YOLO subprocess every 10 seconds
-    while p.poll() is None:
-        try:
-            process = psutil.Process(yolo_pid)
-            memory_usage = process.memory_info().rss / (1024 * 1024)  # Convert to MB
-            
-            # Update maximum memory usage if needed
-            if memory_usage > max_memory_usage:
-                max_memory_usage = memory_usage
-            
-            print(f"Current memory usage of YOLO subprocess: {memory_usage:.2f} MB")
-        except psutil.NoSuchProcess:
-            # Handle the case where the process has terminated
-            break
-
-        # Sleep for 10 seconds before the next measurement
-        time.sleep(10)
-    
-    print(f"Maximum memory usage of YOLO subprocess: {max_memory_usage:.2f} MB")
-
+def measure_memory_usage_subprocess(pid, max_memory):
+    try:
+        # Get the process associated with the given PID
+        process = psutil.Process(pid)
+        # Measure memory usage using psutil
+        memory_info = process.memory_info()
+        total_memory_usage = (memory_info.rss + memory_info.vms)/ (1024 * 1024)  # Total memory usage
+        if(total_memory_usage>max_memory):
+            max_memory=total_memory_usage
+        return total_memory_usage, max_memory
+    except psutil.NoSuchProcess:
+        return None
 
 def secureApp():
-    #step 6
     PPDX_SDK.measure_memory_usage()
     with open("config.json") as file:
         config=json.load(file)
     address=config["enclaveManagerAddress"]
     rs_url=config["rs_url"]
     
-    PPDX_SDK.profiling_steps("Enclave Booted", 6)
-    PPDX_SDK.setState("Enclave booted","Enclave booted",6,10,address)
-
-    #step 7
+    #step 6
+    PPDX_SDK.profiling_steps("Generating quote & obtaining token", 6)
+    PPDX_SDK.setState("Generating quote & obtaining token","Generating quote & obtaining token",6,10,address)
     PPDX_SDK.measure_memory_usage()
     quote, b64publicKey, key= PPDX_SDK.generateQuote()    
     token=PPDX_SDK.getTokenFromAPD(quote, b64publicKey, config)
+    PPDX_SDK.measure_memory_usage()
+
+    #step 7
+    PPDX_SDK.measure_memory_usage()
+    PPDX_SDK.profiling_steps("Getting encrypted data from resource server", 7)
+    PPDX_SDK.setState("Getting encrypted data from resource server","Getting encrypted data from resource server",7,10,address)
     loadedDict=PPDX_SDK.getFileFromResourceServer(token, rs_url)
     PPDX_SDK.measure_memory_usage()
-    PPDX_SDK.profiling_steps("Encrypted data recieved", 7)
-    PPDX_SDK.setState("Encrypted data recieved","Encrypted data recieved",7,10,address)
+    
 
     #step 8
     PPDX_SDK.measure_memory_usage()
+    PPDX_SDK.profiling_steps("Decrypting files", 8)
+    PPDX_SDK.setState("Decrypting files","Decrypting files",8,10,address)
     PPDX_SDK.decryptFile(loadedDict, key)
-    PPDX_SDK.profiling_steps("Decryption completed", 8)
-    PPDX_SDK.setState("Decryption completed","Decryption completed",8,10,address)
     PPDX_SDK.measure_memory_usage()
 
     PPDX_SDK.profiling_input()
@@ -67,8 +55,25 @@ def secureApp():
     PPDX_SDK.setState("Executing application","Executing application",9,10,address)
     print("YOLO invoked...")
     #subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
-    measure_memory_usage_subprocess()
+    process = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    max_memory=0
+    pid = process.pid
+    while process.poll() is None:
+        # Measure memory usage using the PID
+        memory_usage,max_memory = measure_memory_usage_subprocess(pid)
+
+        # Sleep for 10 seconds
+        time.sleep(10)
+
+        # Write memory data to a JSON file
+        with open('memory_data.json', 'w') as json_file:
+            json.dump(memory_usage, json_file)
+
+    # Print the maximum memory usage
+    print(f"Maximum memory usage: {max_memory:.2f} MB")
+    print("Process finished. Memory data written to memory_data.json.")
     print("YOLO completed.")
+
     
 with open("config.json", "r") as file:
         config= json.load(file)

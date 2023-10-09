@@ -49,5 +49,5 @@ call_setstate_endpoint "Building manifest" 10 4 "Building manifest"
 make clean
 make SGX=1 RA_TYPE=dcap
 
-#step 4 done
+#step 5 done
 python3 -c 'import PPDX_SDK; PPDX_SDK.measure_memory_usage()'
