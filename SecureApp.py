@@ -58,6 +58,7 @@ def secureApp():
     process = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     max_memory=0
     pid = process.pid
+    print(f"Process ID: {pid}")
     while process.poll() is None:
         # Measure memory usage using the PID
         print("Measuring memory usage...")
