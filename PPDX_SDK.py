@@ -19,6 +19,7 @@ import psutil
 def generateQuote():
     key = RSA.generate(2048)
     publicKey=key.publickey().export_key(format='DER')
+    print("Public key generated: " ,publicKey)
     privateKey=key.export_key(format='DER')
     b64publicKey=base64.b64encode(publicKey)
     sha= hashlib.sha512(publicKey).hexdigest()
@@ -28,6 +29,7 @@ def generateQuote():
     with open("/dev/attestation/quote", "rb") as f:
         quote = f.read()
     print("Quote generated.")
+    print("Quote: ",quote)
     return quote,b64publicKey, key
 
 #APD verifies quote and releases token
