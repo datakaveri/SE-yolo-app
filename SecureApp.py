@@ -23,8 +23,7 @@ def measure_memory_usage(process):
         return None
 '''
 
-def secureApp():
-
+def secureApp(memory_usage_step5_start):
     with open("config.json") as file:
         config=json.load(file)
     address=config["enclaveManagerAddress"]
@@ -147,7 +146,7 @@ with open("config.json", "r") as file:
 address=config["enclaveManagerAddress"]
 
 print("Now I am starting...")
-secureApp()
+secureApp(memory_usage_step5_start)
 PPDX_SDK.profiling_steps("Execution Completed", 10, 0)
 PPDX_SDK.profiling_totalTime()
 PPDX_SDK.setState("Execution Complete","Execution Complete",10,10,address)
