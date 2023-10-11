@@ -37,6 +37,8 @@ def secureApp(memory_usage_step5_start):
     print("Step 5 memory usage: ",total_mem," MB")
     PPDX_SDK.profiling_steps("Starting Application in SGX Enclave", 5, total_mem)
 
+    mem_end,mem_start,total_mem=0,0,0
+
     #step 6
     print("step 6")
     mem_start=PPDX_SDK.measure_memory_usage()
@@ -54,6 +56,8 @@ def secureApp(memory_usage_step5_start):
     print("Step 6 memory usage: ",total_mem," MB")
     PPDX_SDK.profiling_steps("Generating quote & obtaining token", 6, total_mem)
 
+    mem_end,mem_start,total_mem=0,0,0
+
     #step 7
     print("step 7")
     mem_start=PPDX_SDK.measure_memory_usage()
@@ -69,6 +73,8 @@ def secureApp(memory_usage_step5_start):
     total_mem=mem_end-mem_start
     print("Step 7 memory usage: ",total_mem," MB")
     PPDX_SDK.profiling_steps("Getting encrypted data from resource server", 7, total_mem)
+
+    mem_end,mem_start,total_mem=0,0,0
 
     #step 8
     print("step 8")
@@ -87,6 +93,8 @@ def secureApp(memory_usage_step5_start):
     print("Step 8 memory usage: ",total_mem," MB")
     PPDX_SDK.profiling_steps("Decrypting files", 8, total_mem)
     
+    mem_end,mem_start,total_mem=0,0,0
+
     #step 9
     print("step 9")
     mem_start=PPDX_SDK.measure_memory_usage()
@@ -105,6 +113,7 @@ def secureApp(memory_usage_step5_start):
     print("Step 9 memory usage: ",total_mem," MB")
     PPDX_SDK.profiling_steps("Executing application", 9, total_mem)
     
+    mem_end,mem_start,total_mem=0,0,0
 
     '''
     process = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
@@ -140,6 +149,7 @@ def secureApp(memory_usage_step5_start):
 
 if len(sys.argv) > 1:
         memory_usage_step5_start = float(sys.argv[1])
+        print("Memory usage at start of step 5: ",memory_usage_step5_start," MB")
 
 with open("config.json", "r") as file:
         config= json.load(file)
