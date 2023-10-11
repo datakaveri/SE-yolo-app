@@ -106,16 +106,17 @@ def call_set_state_endpoint(state, address):
     #print response
     print(r.text)
 
-#profiling function: timestamp, memory & CPU
-def profiling_steps(description, stepno):
+#profiling function: timestamp, memory usage, step description
+def profiling_steps(description, stepno, memory):
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
     step = {
         "step"+str(stepno): {
             "description": description,
-            "timestamp": timestamp_str
-        }   
+            "timestamp": timestamp_str,
+            "memory_usage_mb": memory
+        }
     }
     data["stepsProfile"].append(step)
     with open("profiling.json", "w") as file:
@@ -218,3 +219,4 @@ def measure_memory_usage():
     process = psutil.Process()
     memory = process.memory_info().rss / (1024 * 1024)  # in MB
     print(f" memory usage: {memory:.2f} MB")
+    return memory

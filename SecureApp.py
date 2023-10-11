@@ -1,9 +1,9 @@
 import PPDX_SDK
 import json
 import subprocess
-import time
-import psutil
+import sys
 
+'''
 def measure_memory_usage():
     memory_info = psutil.virtual_memory()
     total_memory_usage = memory_info.percent  # Total memory usage percentage
@@ -21,45 +21,93 @@ def measure_memory_usage(process):
         return total_memory_usage
     except psutil.NoSuchProcess or psutil.AccessDenied :
         return None
+'''
 
 def secureApp():
-    PPDX_SDK.measure_memory_usage()
+
     with open("config.json") as file:
         config=json.load(file)
     address=config["enclaveManagerAddress"]
     rs_url=config["rs_url"]
     
+    #step 5 ends
+    print("step 5 ends")
+    mem_end=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_end," MB")
+    total_mem=mem_end-memory_usage_step5_start
+    print("Step 5 memory usage: ",total_mem," MB")
+    PPDX_SDK.profiling_steps("Starting Application in SGX Enclave", 5, total_mem)
+
     #step 6
-    PPDX_SDK.profiling_steps("Generating quote & obtaining token", 6)
+    print("step 6")
+    mem_start=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_start," MB")
     PPDX_SDK.setState("Generating quote & obtaining token","Generating quote & obtaining token",6,10,address)
-    PPDX_SDK.measure_memory_usage()
+
     quote, b64publicKey, key= PPDX_SDK.generateQuote()    
     token=PPDX_SDK.getTokenFromAPD(quote, b64publicKey, config)
-    PPDX_SDK.measure_memory_usage()
+
+    #step 6 ends
+    print("step 6 ends")
+    mem_end=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_end," MB")
+    total_mem=mem_end-mem_start
+    print("Step 6 memory usage: ",total_mem," MB")
+    PPDX_SDK.profiling_steps("Generating quote & obtaining token", 6, total_mem)
 
     #step 7
-    PPDX_SDK.measure_memory_usage()
-    PPDX_SDK.profiling_steps("Getting encrypted data from resource server", 7)
+    print("step 7")
+    mem_start=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_start," MB")
     PPDX_SDK.setState("Getting encrypted data from resource server","Getting encrypted data from resource server",7,10,address)
+
     loadedDict=PPDX_SDK.getFileFromResourceServer(token, rs_url)
-    PPDX_SDK.measure_memory_usage()
-    
+
+    #step 7 ends
+    print("step 7 ends")
+    mem_end=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_end," MB")
+    total_mem=mem_end-mem_start
+    print("Step 7 memory usage: ",total_mem," MB")
+    PPDX_SDK.profiling_steps("Getting encrypted data from resource server", 7, total_mem)
 
     #step 8
-    PPDX_SDK.measure_memory_usage()
-    PPDX_SDK.profiling_steps("Decrypting files", 8)
+    print("step 8")
+    mem_start=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_start," MB")
     PPDX_SDK.setState("Decrypting files","Decrypting files",8,10,address)
-    PPDX_SDK.decryptFile(loadedDict, key)
-    PPDX_SDK.measure_memory_usage()
 
-    PPDX_SDK.profiling_input()
+    PPDX_SDK.decryptFile(loadedDict, key)
+    PPDX_SDK.profiling_input()    #input file size/number of files
+
+    #step 8 ends
+    print("step 8 ends")
+    mem_end=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_end," MB")
+    total_mem=mem_end-mem_start
+    print("Step 8 memory usage: ",total_mem," MB")
+    PPDX_SDK.profiling_steps("Decrypting files", 8, total_mem)
     
     #step 9
-    PPDX_SDK.measure_memory_usage()
-    PPDX_SDK.profiling_steps("Executing application", 9)
+    print("step 9")
+    mem_start=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_start," MB")
     PPDX_SDK.setState("Executing application","Executing application",9,10,address)
+
     print("YOLO invoked...")
-    #subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
+    subprocess.run("./runyolo5.sh",shell=True,stderr=subprocess.STDOUT)
+    print("YOLO completed.")
+
+    #step 9 ends
+    print("step 9 ends")
+    mem_end=PPDX_SDK.measure_memory_usage()
+    print("Memory usage: ",mem_end," MB")
+    total_mem=mem_end-mem_start
+    print("Step 9 memory usage: ",total_mem," MB")
+    PPDX_SDK.profiling_steps("Executing application", 9, total_mem)
+    
+
+    '''
     process = subprocess.Popen(["./runyolo5.sh"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     max_memory=0
     pid = process.pid
@@ -88,18 +136,19 @@ def secureApp():
     # Print the maximum memory usage
     #print(f"Maximum memory usage: {max_memory:.2f} MB")
     print("Process finished. Memory data written to memory_data.json.")
-    print("YOLO completed.")
+    '''
 
-    
+
+if len(sys.argv) > 1:
+        memory_usage_step5_start = float(sys.argv[1])
+
 with open("config.json", "r") as file:
         config= json.load(file)
 address=config["enclaveManagerAddress"]
 
-
-
 print("Now I am starting...")
 secureApp()
-PPDX_SDK.profiling_steps("Execution Completed", 10)
+PPDX_SDK.profiling_steps("Execution Completed", 10, 0)
 PPDX_SDK.profiling_totalTime()
 PPDX_SDK.setState("Execution Complete","Execution Complete",10,10,address)
 print("Now I am done..")
