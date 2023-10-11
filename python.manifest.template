@@ -24,7 +24,6 @@ fs.mounts = [
   { path = "/bin", uri = "file:/bin" },
   { path = "/env", uri = "file:/home/iudx/.env/sgx-yolo-app/" },
   { path = "/runyolo5.sh", uri = "file:runyolo5.sh"},
-  { path = "/proc", uri = "file:/proc" },
   { type = "encrypted", path = "/inputdata/", uri = "file:inputdata/", key_name = "_sgx_mrsigner" }
 ]
 
@@ -67,7 +66,5 @@ sgx.allowed_files = [
   "file:yolov5/runs/detect/",
   "file:yolov5/labels.json",
   "file:yolov5/runOutput.txt",
-  "file:profiling.json",
-  "file:memory_data.json",
-  "file:/proc/"
+  "file:profiling.json"
 ]
