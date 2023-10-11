@@ -218,4 +218,5 @@ def decryptChunk(loadedDict,key):
 def measure_memory_usage():
     process = psutil.Process()
     memory = process.memory_info().rss / (1024 * 1024)  # in MB
+    print("memory from function: " + str(memory))
     return memory
