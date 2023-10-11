@@ -12,4 +12,4 @@ call_setstate_endpoint "Starting Application in SGX Enclave" 10 5 "Starting Appl
 
 echo "Starting Application in SGX Enclave"
 # Run new enclave
-gramine-sgx ./python SecureApp.py
+gramine-sgx ./python SecureApp.py "$memory_usage"
