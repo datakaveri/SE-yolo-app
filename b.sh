@@ -41,7 +41,7 @@ cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 echo "Step 3 done"
 memory_usage_2=$(python3 -c 'import PPDX_SDK; print(PPDX_SDK.measure_memory_usage())')
 echo "Memory usage: $memory_usage_2"
-total_memory_usage=$(($memory_usage_2 - $memory_usage))
+total_memory_usage=$(echo "$memory_usage_2 - $memory_usage" | bc -l)
 echo "Total memory usage: $total_memory_usage "
 #calling profiling function
 profiling_func 3 "Setting up the virtual environment(if not present) & installing dependencies for application" "$total_memory_usage"
@@ -62,7 +62,7 @@ make SGX=1 RA_TYPE=dcap
 echo "Step 4 done"
 memory_usage_2=$(python3 -c 'import PPDX_SDK; print(PPDX_SDK.measure_memory_usage())')
 echo "Memory usage: $memory_usage_2"
-total_memory_usage=$(($memory_usage_2 - $memory_usage))
+total_memory_usage=$(echo "$memory_usage_2 - $memory_usage" | bc -l)
 echo "Total memory usage: $total_memory_usage "
 #calling profiling function
 profiling_func 4 "Building manifest" "$total_memory_usage"
