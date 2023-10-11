@@ -138,6 +138,19 @@ def profiling_input():
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
 
+def parse_timestamp(timestamp):
+    # Try to parse timestamp with different formats
+    possible_formats = ["%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S.%f"]
+    
+    for fmt in possible_formats:
+        try:
+            return datetime.strptime(timestamp, fmt)
+        except ValueError:
+            continue
+    
+    # If none of the formats work, raise an exception
+    raise ValueError("Unrecognized timestamp format: {}".format(timestamp))
+
 def profiling_totalTime():
     with open("profiling.json", "r") as file:
         data = json.load(file)
@@ -154,23 +167,15 @@ def profiling_totalTime():
         elif step_label == "step10":
             timestamp_step10 = step_data["timestamp"]
 
-    possible_formats = ["%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S.%f"]
-
     # Check if both timestamps were found
     if timestamp_step1 is not None and timestamp_step10 is not None:
         # Convert timestamps to datetime objects (you'll need to import datetime)
         from datetime import datetime
         #time_format = "%Y-%m-%d %H:%M:%S.%f"
         #time_format = "%Y-%m-%dT%H:%M:%SZ"
-        dt_step1 = None
-        dt_step10 = None
-        for format in possible_formats:
-            try:
-                dt_step1 = datetime.strptime(timestamp_step1, format)
-                dt_step10 = datetime.strptime(timestamp_step10, format)
-                break
-            except ValueError:
-                pass
+        dt_step1 = parse_timestamp(timestamp_step1)
+        dt_step10 = parse_timestamp(timestamp_step10)
+        
         #dt_step1 = datetime.strptime(timestamp_step1, time_format)
         #dt_step10 = datetime.strptime(timestamp_step10, time_format)
 
