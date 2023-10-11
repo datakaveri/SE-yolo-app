@@ -158,7 +158,8 @@ def profiling_totalTime():
     if timestamp_step1 is not None and timestamp_step10 is not None:
         # Convert timestamps to datetime objects (you'll need to import datetime)
         from datetime import datetime
-        time_format = "%Y-%m-%d %H:%M:%S.%f"
+        time_format = "%Y-%m-%dT%H:%M:%SZ"
+        #time_format = "%Y-%m-%d %H:%M:%S.%f"
         dt_step1 = datetime.strptime(timestamp_step1, time_format)
         dt_step10 = datetime.strptime(timestamp_step10, time_format)
 
@@ -175,6 +176,8 @@ def profiling_totalTime():
         # Write the updated data back to "profiling.json"
         with open("profiling.json", "w") as output_file:
             json.dump(data, output_file, indent=4)
+
+
 #Chunk Functions:
 
 def dataChunkN(n, url, access_token, key):
