@@ -111,11 +111,12 @@ def profiling_steps(description, stepno, memory):
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')
+    memory_mb = f"{memory} MB"
     step = {
         "step"+str(stepno): {
             "description": description,
             "timestamp": timestamp_str,
-            "memory_usage_mb": memory
+            "memory_usage_mb": memory_mb
         }
     }
     data["stepsProfile"].append(step)
