@@ -54,7 +54,7 @@ def getTokenFromAPD(quote,b64publicKey,config):
         print("Quote verified and Token recieved.")
         jsonResponse=r.json()
         token=jsonResponse.get('results').get('accessToken')
-        print(token)
+        #print(token)
         return token
     else:
         print("Quote verification failed.", r.text)
@@ -151,6 +151,7 @@ def parse_timestamp(timestamp):
     # If none of the formats work, raise an exception
     raise ValueError("Unrecognized timestamp format: {}".format(timestamp))
 
+'''
 def profiling_totalTime():
     with open("profiling.json", "r") as file:
         data = json.load(file)
@@ -192,7 +193,7 @@ def profiling_totalTime():
         # Write the updated data back to "profiling.json"
         with open("profiling.json", "w") as output_file:
             json.dump(data, output_file, indent=4)
-
+'''
 
 #Chunk Functions:
 

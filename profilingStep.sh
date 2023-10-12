@@ -15,8 +15,7 @@ function profiling_func() {
             "input": {
                 "images": 0
             },
-            "stepsProfile": [],
-            "totalTime": 0
+            "stepsProfile": []
         }'
     fi
 
