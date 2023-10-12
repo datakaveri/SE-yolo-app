@@ -6,6 +6,11 @@ function profiling_func() {
     local memory_usage="$3"
     local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
+    if (( $(echo "$memory_usage < 0" | bc -l) )); then
+        memory_usage="0"
+    fi
+    memory_usage="${memory_usage} MB"
+    
     if [ -f "profiling.json" ]; then
         # Read data from profiling.json if it exists
         data=$(jq -c '.' profiling.json)
