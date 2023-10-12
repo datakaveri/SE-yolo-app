@@ -10,7 +10,7 @@ function profiling_func() {
         memory_usage="0"
     fi
     memory_usage="${memory_usage} MB"
-    
+
     if [ -f "profiling.json" ]; then
         # Read data from profiling.json if it exists
         data=$(jq -c '.' profiling.json)
@@ -20,7 +20,8 @@ function profiling_func() {
             "input": {
                 "images": 0
             },
-            "stepsProfile": []
+            "stepsProfile": [],
+            "totalTime" : {}
         }'
     fi
 
