@@ -116,7 +116,7 @@ def profiling_steps(description, stepno, memory):
         "step"+str(stepno): {
             "description": description,
             "timestamp": timestamp_str,
-            "memory_usage_mb": memory_mb
+            "memory_usage": memory_mb
         }
     }
     data["stepsProfile"].append(step)
