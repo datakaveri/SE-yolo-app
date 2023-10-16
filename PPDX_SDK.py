@@ -146,7 +146,7 @@ def profiling_totalTimeandMemory():
     timestamp_step1 = None
     timestamp_step10 = None
     total_memory_usage = 0  
-
+    '''
     for i in range(1, 9):
         step_label = f"step{i}"
         step_data = next((step for step in data["stepsProfile"] if step.get(step_label)), None)
@@ -156,11 +156,22 @@ def profiling_totalTimeandMemory():
             memory_usage_str = step_data[step_label]["memory_usage"]
             memory_usage_value = float(memory_usage_str.split()[0])
             total_memory_usage += memory_usage_value
-            
+
     from datetime import datetime
     timestamp_step10=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
     data["totalMemory"] = f"{total_memory_usage} MB"
-
+    '''
+    for step in data["stepsProfile"]:
+        step_label = list(step.keys())[0]  # Extract the step label, e.g., "step1"
+        step_data = list(step.values())[0]  # Extract the step data
+        memory_usage_str = step_data["memory_usage"]
+        memory_usage_value = float(memory_usage_str.split()[0])
+        total_memory_usage += memory_usage_value    
+        if step_label == "step1":
+            timestamp_step1 = step_data["timestamp"]
+        elif step_label == "step10":
+            timestamp_step10 = step_data["timestamp"]
+    data["totalMemory"] = f"{total_memory_usage} MB"
     # Check if both timestamps were found
     if timestamp_step1 is not None and timestamp_step10 is not None:
         # Convert timestamps to datetime objects (you'll need to import datetime)

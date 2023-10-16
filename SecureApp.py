@@ -157,8 +157,8 @@ address=config["enclaveManagerAddress"]
 
 print("Now I am starting...")
 secureApp(memory_usage_step5_start)
-PPDX_SDK.profiling_totalTimeandMemory()
 PPDX_SDK.profiling_steps("Execution Completed", 10, 0)
+PPDX_SDK.profiling_totalTimeandMemory()
 PPDX_SDK.setState("Execution Complete","Execution Complete",10,10,address)
 print("Now I am done..")
 
