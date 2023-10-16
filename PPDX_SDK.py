@@ -146,18 +146,17 @@ def profiling_totalTimeandMemory():
     timestamp_step10 = None
     total_memory_usage = 0  
 
-    for i in range(1, 10):
+    for i in range(1, 9):
         step_label = f"step{i}"
         step_data = next((step for step in data["stepsProfile"] if step.get(step_label)), None)
         if(i==1):
             timestamp_step1 = step_data[step_label]["timestamp"]
-        if(i==10):
-            timestamp_step10 = step_data[step_label]["timestamp"]
         if step_data:
             memory_usage_str = step_data[step_label]["memory_usage"]
             memory_usage_value = float(memory_usage_str.split()[0])
             total_memory_usage += memory_usage_value
 
+    timestamp_step10=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
     data["totalMemoryUsage"] = f"{total_memory_usage} MB"
 
     # Check if both timestamps were found
