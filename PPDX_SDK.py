@@ -140,6 +140,7 @@ def profiling_input():
         json.dump(data, file, indent=4)
 
 def profiling_totalTimeandMemory():
+    print("Profiling total time and memory usage...")
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_step1 = None
@@ -157,7 +158,7 @@ def profiling_totalTimeandMemory():
             total_memory_usage += memory_usage_value
 
     timestamp_step10=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-    data["totalMemoryUsage"] = f"{total_memory_usage} MB"
+    data["totalMemory"] = f"{total_memory_usage} MB"
 
     # Check if both timestamps were found
     if timestamp_step1 is not None and timestamp_step10 is not None:
@@ -181,6 +182,8 @@ def profiling_totalTimeandMemory():
         # Write the updated data back to "profiling.json"
         with open("profiling.json", "w") as output_file:
             json.dump(data, output_file, indent=4)
+
+    print("Final Profiling completed.")
 
 
 #Chunk Functions:
