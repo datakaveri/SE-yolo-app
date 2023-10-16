@@ -21,7 +21,11 @@ function profiling_func() {
                 "images": 0
             },
             "stepsProfile": [],
-            "totalTime" : {}
+            "totalTime": {
+                "minutes": 0,
+                "seconds": 0
+            },
+            "totalMemory" : "0 MB"
         }'
     fi
 
