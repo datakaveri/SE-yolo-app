@@ -139,21 +139,26 @@ def profiling_input():
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
 
-def profiling_totalTime():
+def profiling_totalTimeandMemory():
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_step1 = None
     timestamp_step10 = None
+    total_memory_usage = 0  
 
-    # Iterate through the list of steps to find "step1" and "step10"
-    for step in data["stepsProfile"]:
-        step_label = list(step.keys())[0]  # Extract the step label, e.g., "step1"
-        step_data = list(step.values())[0]  # Extract the step data
+    for i in range(1, 10):
+        step_label = f"step{i}"
+        step_data = next((step for step in data["stepsProfile"] if step.get(step_label)), None)
+        if(i==1):
+            timestamp_step1 = step_data[step_label]["timestamp"]
+        if(i==10):
+            timestamp_step10 = step_data[step_label]["timestamp"]
+        if step_data:
+            memory_usage_str = step_data[step_label]["memory_usage"]
+            memory_usage_value = float(memory_usage_str.split()[0])
+            total_memory_usage += memory_usage_value
 
-        if step_label == "step1":
-            timestamp_step1 = step_data["timestamp"]
-        elif step_label == "step10":
-            timestamp_step10 = step_data["timestamp"]
+    data["totalMemoryUsage"] = f"{total_memory_usage} MB"
 
     # Check if both timestamps were found
     if timestamp_step1 is not None and timestamp_step10 is not None:
