@@ -156,7 +156,8 @@ def profiling_totalTimeandMemory():
             memory_usage_str = step_data[step_label]["memory_usage"]
             memory_usage_value = float(memory_usage_str.split()[0])
             total_memory_usage += memory_usage_value
-
+            
+    from datetime import datetime
     timestamp_step10=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
     data["totalMemory"] = f"{total_memory_usage} MB"
 
