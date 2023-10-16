@@ -171,35 +171,30 @@ def profiling_totalTimeandMemory():
             timestamp_step1 = step_data["timestamp"]
         elif step_label == "step10":
             timestamp_step10 = step_data["timestamp"]
+
     data["totalMemory"] = f"{total_memory_usage} MB"
+
     # Check if both timestamps were found
     if timestamp_step1 is not None and timestamp_step10 is not None:
-        # Convert timestamps to datetime objects (you'll need to import datetime)
         from datetime import datetime
         time_format = "%Y-%m-%dT%H:%M:%SZ"
-        
         dt_step1 = datetime.strptime(timestamp_step1, time_format)
         dt_step10 = datetime.strptime(timestamp_step10, time_format)
 
-        # Calculate the time difference in seconds
+        # Calculate the time difference
         time_difference_seconds = (dt_step10 - dt_step1).total_seconds()
-
-        # Convert seconds to minutes and seconds
         minutes = int(time_difference_seconds // 60)
         seconds = int(time_difference_seconds % 60)
 
-        # Add the total time to the data dictionary
         data["totalTime"] = {"minutes": minutes, "seconds": seconds}
 
-        # Write the updated data back to "profiling.json"
         with open("profiling.json", "w") as output_file:
             json.dump(data, output_file, indent=4)
 
     print("Final Profiling completed.")
 
 
-#Chunk Functions:
-
+#CHUNK FUNCTIONS
 def dataChunkN(n, url, access_token, key):
     loadedDict=getChunkFromResourceServer(n, url, access_token)
     if loadedDict:
