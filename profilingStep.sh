@@ -18,7 +18,6 @@ function profiling_func() {
         # Initialize with default data if profiling.json doesn't exist
         data='{
             "input": {
-                "images": 0
             },
             "stepsProfile": [],
             "totalTime": {
