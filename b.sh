@@ -6,6 +6,8 @@ chmod a+x ./setState.sh
 
 cp /home/iudx/sgx-enclave-manager/profiling.json ./
 
+#step 2 profiling
+profiling_func 2 "Pulling code"
 #start of step 3
 echo "Step 3"
 
