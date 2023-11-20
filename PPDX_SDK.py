@@ -106,17 +106,15 @@ def call_set_state_endpoint(state, address):
     #print response
     print(r.text)
 
-#profiling function: timestamp, memory usage, step description
-def profiling_steps(description, stepno, memory):
+#profiling function: timestamp, step description
+def profiling_steps(description, stepno):
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-    memory_mb = f"{memory} MB"
     step = {
         "step"+str(stepno): {
             "description": description,
-            "timestamp": timestamp_str,
-            "memory_usage": memory_mb
+            "timestamp": timestamp_str
         }
     }
     data["stepsProfile"].append(step)
@@ -124,7 +122,7 @@ def profiling_steps(description, stepno, memory):
         json.dump(data, file, indent=4)
 
 #profiling: input data
-def profiling_input():
+def profiling_inputImages():
     with open("profiling.json", "r") as file:
         data = json.load(file)
     extracted_directory = '/inputdata'
@@ -139,26 +137,20 @@ def profiling_input():
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
 
-def profiling_totalTimeandMemory():
-    print("Profiling total time and memory usage...")
+def profiling_totalTime():
+    print("Profiling total time...")
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_step1 = None
     timestamp_step10 = None
-    total_memory_usage = 0  
     
     for step in data["stepsProfile"]:
         step_label = list(step.keys())[0]  # Extract the step label, e.g., "step1"
-        step_data = list(step.values())[0]  # Extract the step data
-        memory_usage_str = step_data["memory_usage"]
-        memory_usage_value = float(memory_usage_str.split()[0])
-        total_memory_usage += memory_usage_value    
+        step_data = list(step.values())[0]  # Extract the step data   
         if step_label == "step1":
             timestamp_step1 = step_data["timestamp"]
         elif step_label == "step10":
             timestamp_step10 = step_data["timestamp"]
-
-    data["totalMemory"] = f"{total_memory_usage} MB"
 
     # Check if both timestamps were found
     if timestamp_step1 is not None and timestamp_step10 is not None:
@@ -218,8 +210,3 @@ def decryptChunk(loadedDict,key):
     with open('../inputdata/outfile.gz', "wb") as f:
         f.write(decryptedData)
     print("Chunk decrypted and saved in /inputdata/outfile.gz.")
-
-def measure_memory_usage():
-    process = psutil.Process()
-    memory = process.memory_info().rss / (1024 * 1024)  # in MB
-    return memory
