@@ -6,13 +6,10 @@ chmod a+x ./setState.sh
 
 cp /home/iudx/sgx-enclave-manager/profiling.json ./
 
-#step 2 profiling
-profiling_func 2 "Pulling code"
 #start of step 3
 echo "Step 3"
-
-#calling setState endpoint (step 3)
-call_setstate_endpoint "Setting up the virtual environment(if not present) & installing dependencies for application" 10 3 "Setting up the environment"
+call_setstate_endpoint "Setting up the virtual environment & installing dependencies for application" 10 3 "Setting up virtual environment"
+profiling_func 3 "Setting up the virtual environment & installing dependencies for application" 
 
 echo "setting up environment"
 #virtual environment 
@@ -37,20 +34,14 @@ cp /home/iudx/yoloHelper/config.json ./
 cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 
-#step 3 done
-#calling profiling function
-profiling_func 3 "Setting up the virtual environment(if not present) & installing dependencies for application"
-
 #start of step 4
 echo "Step 4"
 
 #calling setState endpoint (step 4)
 call_setstate_endpoint "Building manifest" 10 4 "Building manifest"
+profiling_func 4 "Building manifest"
 
 echo "Building manifest"
 make clean
 make SGX=1 RA_TYPE=dcap
 
-#step 4 done
-#calling profiling function
-profiling_func 4 "Building manifest"
