@@ -3,13 +3,7 @@
 function profiling_func() {
     local stepno="$1"
     local description="$2"
-    local memory_usage="$3"
     local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-
-    if (( $(echo "$memory_usage < 0" | bc -l) )); then
-        memory_usage="0"
-    fi
-    memory_usage="${memory_usage} MB"
 
     if [ -f "profiling.json" ]; then
         # Read data from profiling.json if it exists
@@ -18,10 +12,12 @@ function profiling_func() {
         # Initialize with default data if profiling.json doesn't exist
         data='{
             "input": {
-                "images": 0
             },
             "stepsProfile": [],
-            "totalTime" : {}
+            "totalTime": {
+                "minutes": 0,
+                "seconds": 0
+            }
         }'
     fi
 
@@ -30,10 +26,10 @@ function profiling_func() {
 
     if [ "$step_exists" = "true" ]; then
         # Update the existing step with the same number
-        updated_data=$(echo "$data" | jq --arg stepno "$stepno" --arg description "$description" --arg timestamp "$timestamp" --arg memory_usage "$memory_usage" '.stepsProfile[] |= if has($stepno) then .[$stepno].description = $description | .[$stepno].timestamp = $timestamp | .[$stepno].memory_usage = $memory_usage else . end')
+        updated_data=$(echo "$data" | jq --arg stepno "$stepno" --arg description "$description" --arg timestamp "$timestamp" '.stepsProfile[] |= if has($stepno) then .[$stepno].description = $description | .[$stepno].timestamp = $timestamp else . end')
     else
         # Construct the step object
-        local step_object="{\"step$stepno\": {\"description\": \"$description\", \"timestamp\": \"$timestamp\", \"memory_usage\": \"$memory_usage\"}}"
+        local step_object="{\"step$stepno\": {\"description\": \"$description\", \"timestamp\": \"$timestamp\"}}"
         
         # Add the step object to 'stepsProfile' array
         updated_data=$(echo "$data" | jq --argjson step "$step_object" '.stepsProfile += [$step]')

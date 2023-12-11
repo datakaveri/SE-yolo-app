@@ -14,6 +14,8 @@ import tarfile
 import urllib.parse
 import datetime
 import psutil
+import gzip
+import csv
 
 #generate quote to be sent to APD for verification
 def generateQuote():
@@ -106,25 +108,23 @@ def call_set_state_endpoint(state, address):
     #print response
     print(r.text)
 
-#profiling function: timestamp, memory usage, step description
-def profiling_steps(description, stepno, memory):
+#profiling function: timestamp, step description
+def profiling_steps(description, stepno):
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_str = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-    memory_mb = f"{memory} MB"
     step = {
         "step"+str(stepno): {
             "description": description,
-            "timestamp": timestamp_str,
-            "memory_usage_mb": memory_mb
+            "timestamp": timestamp_str
         }
     }
     data["stepsProfile"].append(step)
     with open("profiling.json", "w") as file:
         json.dump(data, file, indent=4)
 
-#profiling: input data
-def profiling_input():
+#profiling: input images
+def profiling_inputImages():
     with open("profiling.json", "r") as file:
         data = json.load(file)
     extracted_directory = '/inputdata'
@@ -140,16 +140,15 @@ def profiling_input():
         json.dump(data, file, indent=4)
 
 def profiling_totalTime():
+    print("Profiling total time...")
     with open("profiling.json", "r") as file:
         data = json.load(file)
     timestamp_step1 = None
     timestamp_step10 = None
-
-    # Iterate through the list of steps to find "step1" and "step10"
+    
     for step in data["stepsProfile"]:
         step_label = list(step.keys())[0]  # Extract the step label, e.g., "step1"
-        step_data = list(step.values())[0]  # Extract the step data
-
+        step_data = list(step.values())[0]  # Extract the step data   
         if step_label == "step1":
             timestamp_step1 = step_data["timestamp"]
         elif step_label == "step10":
@@ -157,30 +156,25 @@ def profiling_totalTime():
 
     # Check if both timestamps were found
     if timestamp_step1 is not None and timestamp_step10 is not None:
-        # Convert timestamps to datetime objects (you'll need to import datetime)
         from datetime import datetime
         time_format = "%Y-%m-%dT%H:%M:%SZ"
-        
         dt_step1 = datetime.strptime(timestamp_step1, time_format)
         dt_step10 = datetime.strptime(timestamp_step10, time_format)
 
-        # Calculate the time difference in seconds
+        # Calculate the time difference
         time_difference_seconds = (dt_step10 - dt_step1).total_seconds()
-
-        # Convert seconds to minutes and seconds
         minutes = int(time_difference_seconds // 60)
         seconds = int(time_difference_seconds % 60)
 
-        # Add the total time to the data dictionary
         data["totalTime"] = {"minutes": minutes, "seconds": seconds}
 
-        # Write the updated data back to "profiling.json"
         with open("profiling.json", "w") as output_file:
             json.dump(data, output_file, indent=4)
 
+    print("Final Profiling completed.")
+
 
 #Chunk Functions:
-
 def dataChunkN(n, url, access_token, key):
     loadedDict=getChunkFromResourceServer(n, url, access_token)
     if loadedDict:
@@ -198,7 +192,7 @@ def getChunkFromResourceServer (n,url,token):
     if(rs.status_code==200):
         print("Token authenticated and Encrypted images recieved.")
         loadedDict=pickle.loads(rs.content)
-        print(loadedDict.keys())
+        #print(loadedDict.keys())
         return loadedDict
     else:
         print(rs.text)
@@ -219,7 +213,77 @@ def decryptChunk(loadedDict,key):
         f.write(decryptedData)
     print("Chunk decrypted and saved in /inputdata/outfile.gz.")
 
-def measure_memory_usage():
-    process = psutil.Process()
-    memory = process.memory_info().rss / (1024 * 1024)  # in MB
-    return memory
+
+#Chunk Functions for Healthcare:
+def dataChunkHealthcare(n, url, access_token, key, file_name):
+    loadedArray = getChunkFromResourceServerHealthcare(n, url, access_token, file_name)
+    if loadedArray:
+        data_arrays_count=decryptArrayHealthcare(loadedArray, key,file_name,n)
+        return 1, data_arrays_count
+    else:
+        return 0, 0
+    
+def getChunkFromResourceServerHealthcare (n,url,token,file_name):
+    print("Getting chunk from the resource server..")
+    rs_headers = {'Authorization': f'Bearer {token}'}
+    url = url + file_name + "/"
+    rs_url = f"{url}{n}"
+    print(rs_url)
+    rs = requests.get(rs_url, headers=rs_headers)
+    if rs.headers['content-type'] == 'application/json':
+        try:
+            loadedArray = rs.json()
+        except json.JSONDecodeError:
+            print("Unable to decode response content as JSON.")
+    else:
+        loadedArray = rs.content
+    if loadedArray==b'Chunk not found!':
+        print("No more chunks to retrieve.")
+        return None
+    return loadedArray
+
+def decryptArrayHealthcare(loadedArray,key,file_name,file_number):
+    print("Decrypting chunk..")
+    loaded_dict = pickle.loads(loadedArray)
+    b64encryptedKey = loaded_dict["encryptedKey"]
+    encData = loaded_dict["encData"]
+    encryptedKey = base64.b64decode(b64encryptedKey)
+    decryptor = PKCS1_OAEP.new(key)
+    plainKey = decryptor.decrypt(encryptedKey)
+    print("Symmetric key decrypted using the enclave's private RSA key.")
+    fernetKey = Fernet(plainKey)
+    decryptedData = fernetKey.decrypt(encData)
+    decompressed_data = gzip.decompress(decryptedData)
+    json_data = json.loads(decompressed_data) 
+    rows = [list(item.values()) for item in json_data]
+
+    header = [
+        "age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", 
+        "thalach", "exang", "oldpeak", "slope", "ca", "thal", "target"
+    ]
+    file_name = file_name
+    # Write the data to a CSV file
+    output_file = f'./diseaseDetection/data/{file_name}{file_number}'
+    print("Output file:", output_file)
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    with open(output_file, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(header)
+        writer.writerows(rows)
+
+    print(f"Chunk decrypted and saved in output file.")
+
+    #calculate number of data arrays in output file
+    with open(output_file, "r") as file:
+        reader = csv.reader(file)
+        data_arrays_count = len(list(reader)) - 1
+        
+    print("Number of data arrays in output file:", data_arrays_count)
+    return data_arrays_count
+
+def profiling_inputchunks(count, data_arrays_total):
+    with open("profiling.json", "r") as file:
+        data = json.load(file)
+    data["input"] = {"chunks": count, "no_of_data_arrays": data_arrays_total}
+    with open("profiling.json", "w") as file:
+        json.dump(data, file, indent=4)

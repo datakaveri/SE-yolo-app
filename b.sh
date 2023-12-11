@@ -8,11 +8,8 @@ cp /home/iudx/sgx-enclave-manager/profiling.json ./
 
 #start of step 3
 echo "Step 3"
-memory_usage=$(python3 -c 'import PPDX_SDK; print(PPDX_SDK.measure_memory_usage())')
-echo "Memory usage: $memory_usage"
-
-#calling setState endpoint (step 3)
-call_setstate_endpoint "Setting up the virtual environment(if not present) & installing dependencies for application" 10 3 "Setting up the environment"
+call_setstate_endpoint "Setting up the virtual environment & installing dependencies for application" 10 3 "Setting up virtual environment"
+profiling_func 3 "Setting up the virtual environment & installing dependencies for application" 
 
 echo "setting up environment"
 #virtual environment 
@@ -37,32 +34,14 @@ cp /home/iudx/yoloHelper/config.json ./
 cp /home/iudx/yoloHelper/yolov5x.pt ./yolov5/
 cp /home/iudx/yoloHelper/runOutput.txt ./yolov5/
 
-#step 3 done
-echo "Step 3 done"
-memory_usage_2=$(python3 -c 'import PPDX_SDK; print(PPDX_SDK.measure_memory_usage())')
-echo "Memory usage: $memory_usage_2"
-total_memory_usage=$(echo "$memory_usage_2 - $memory_usage" | bc -l)
-echo "Total memory usage: $total_memory_usage "
-#calling profiling function
-profiling_func 3 "Setting up the virtual environment(if not present) & installing dependencies for application" "$total_memory_usage"
-
 #start of step 4
 echo "Step 4"
-memory_usage=$(python3 -c 'import PPDX_SDK; print(PPDX_SDK.measure_memory_usage())')
-echo "Memory usage: $memory_usage"
 
 #calling setState endpoint (step 4)
 call_setstate_endpoint "Building manifest" 10 4 "Building manifest"
+profiling_func 4 "Building manifest"
 
 echo "Building manifest"
 make clean
 make SGX=1 RA_TYPE=dcap
 
-#step 4 done
-echo "Step 4 done"
-memory_usage_2=$(python3 -c 'import PPDX_SDK; print(PPDX_SDK.measure_memory_usage())')
-echo "Memory usage: $memory_usage_2"
-total_memory_usage=$(echo "$memory_usage_2 - $memory_usage" | bc -l)
-echo "Total memory usage: $total_memory_usage "
-#calling profiling function
-profiling_func 4 "Building manifest" "$total_memory_usage"

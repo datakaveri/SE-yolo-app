@@ -52,6 +52,7 @@ sgx.trusted_files = [
 {% endfor %}
   "file:PPDX_SDK.py",
   "file:SecureApp.py",
+  "file:runSecureApp.py",
   "file:{{ python.get_path('stdlib', vars={'installed_base': '/usr/local'}) }}/",
   "file:/bin/",
   "file:yolov5/",
