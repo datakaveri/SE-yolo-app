@@ -1,18 +1,14 @@
-# PPML by using Intel SGX
-This repository implements Secure Enclaves by Intel SGX to run YOLO machine learning model on input images which are sourced from a resource server in a privacy preserving workflow.  
-## Steps
-1. Create virtual environment.   
-    `python -m venv .env`
-2. Source the virtual environment.  
-    `source env/bin/activate`
-3. Install requirement.txt (for tokenization flow) and yolov5/requirement.txt (for yolo).   
-    `pip install -r requirements.txt -r yolov5/requirements.txt`   
-4. Build the application.     
-    `make SGX=1 RA_TYPE=dcap`
-5. Run the application.    
-    `gramine-sgx ./python runSecureApp.py`
-6. Remove the manifest, input files and output files.   
-    `make clean`   
+# YOLO APP on AMD CVM
+Using Docker, this is how Yolo App can be run locally on AMD CVM.
+
+1. Clone repo into VM
+       `git clone git@github.com:datakaveri/sgx-yolo-app.git`
+2. Switch to AMD branch
+       `git checkout amd_yolo`
+3. Build docker image
+       `sudo docker build -t <name of image> .`
+4. Run
+       `sudo docker run -p 5000:5000 <name of image>`
 
 
 ## Tokenization Flow
