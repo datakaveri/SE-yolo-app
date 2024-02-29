@@ -19,3 +19,4 @@ COPY . .
 
 # Define the command to run your application
 CMD [ "python", "yolov5/detect.py" ]
+
