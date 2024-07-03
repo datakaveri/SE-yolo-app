@@ -2,7 +2,7 @@
 import os 
 import json
 
-input_dir = "runs/detect/exp/labels/"
+input_dir = "runs/detect/exp2/labels/"
 output_file = "labels.json"
 input_dir2 = "./runOutput.txt"
 
