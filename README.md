@@ -8,7 +8,7 @@ Using Docker, this is how Yolo App can be run locally on AMD CVM.
 3. Build docker image
        `sudo docker build -t <name of image> .`
 4. Run
-       `sudo docker run -p 5000:5000 <name of image>`
+       `sudo docker run <name of image>`
 
 
 ## Tokenization Flow

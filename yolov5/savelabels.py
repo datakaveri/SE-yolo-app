@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os 
 import json
+print("In savelabels")
 
 input_dir = "runs/detect/exp/labels/"
 output_file = "labels.json"

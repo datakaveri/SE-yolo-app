@@ -18,5 +18,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Define the command to run your application
-CMD [ "python", "yolov5/detect.py" ]
+CMD [ "python", "SecureApp.py"]
 
