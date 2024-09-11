@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
-  yolo:
-    build: .
+  image-classifier:
+    image: ghcr.io/datakaveri/yolo_app:v1.0  # Replace with your image name and tag
     volumes:
       - /tmp/inputdata:/app/input
       - /tmp/output:/app/output
